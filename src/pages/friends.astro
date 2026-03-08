@@ -69,19 +69,11 @@ const friends = await resolveFriendLinks(friendSources, {
 <style>
 	.friend-wall {
 		min-height: 32rem;
-		background: var(--card-bg);
+		background: #ffffff;
 	}
 
 	.friend-panel {
-		background:
-			radial-gradient(
-				circle at 20% 10%,
-				rgba(255, 255, 255, 0.28),
-				rgba(255, 255, 255, 0) 42%
-			),
-			linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(0, 0, 0, 0.06));
-		backdrop-filter: blur(8px);
-		-webkit-backdrop-filter: blur(8px);
+		background: #ffffff;
 	}
 
 	.friend-title-icon {
@@ -96,10 +88,8 @@ const friends = await resolveFriendLinks(friendSources, {
 	}
 
 	.friend-card {
-		background: rgba(255, 255, 255, 0.38);
-		border: 1px solid rgba(255, 255, 255, 0.36);
-		backdrop-filter: blur(14px) saturate(1.1);
-		-webkit-backdrop-filter: blur(14px) saturate(1.1);
+		background: #e0f2f1;
+		border: 1px solid #c8e7e4;
 		transition:
 			transform 180ms ease,
 			border-color 180ms ease,
@@ -108,8 +98,8 @@ const friends = await resolveFriendLinks(friendSources, {
 
 	.friend-card:hover {
 		transform: translateY(-2px);
-		border-color: rgba(255, 255, 255, 0.68);
-		background: rgba(255, 255, 255, 0.48);
+		border-color: #b8dfda;
+		background: #d6ecea;
 	}
 
 	.friend-title {
@@ -135,49 +125,5 @@ const friends = await resolveFriendLinks(friendSources, {
 
 	.friend-avatar-border {
 		border-color: rgba(0, 0, 0, 0.12);
-	}
-
-	:global(.dark) .friend-panel {
-		background:
-			radial-gradient(
-				circle at 20% 10%,
-				rgba(255, 255, 255, 0.06),
-				rgba(255, 255, 255, 0) 42%
-			),
-			linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.2));
-	}
-
-	:global(.dark) .friend-card {
-		background: rgba(18, 22, 30, 0.42);
-		border-color: rgba(255, 255, 255, 0.18);
-	}
-
-	:global(.dark) .friend-card:hover {
-		background: rgba(18, 22, 30, 0.56);
-		border-color: rgba(255, 255, 255, 0.32);
-	}
-
-	:global(.dark) .friend-title {
-		color: rgba(255, 255, 255, 0.92);
-	}
-
-	:global(.dark) .friend-description {
-		color: rgba(255, 255, 255, 0.78);
-	}
-
-	:global(.dark) .friend-url {
-		color: rgba(255, 255, 255, 0.62);
-	}
-
-	:global(.dark) .friend-arrow {
-		color: rgba(255, 255, 255, 0.56);
-	}
-
-	:global(.dark) .friend-card:hover .friend-arrow {
-		color: rgba(255, 255, 255, 0.9);
-	}
-
-	:global(.dark) .friend-avatar-border {
-		border-color: rgba(255, 255, 255, 0.2);
 	}
 </style>
