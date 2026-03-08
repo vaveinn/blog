@@ -6,10 +6,14 @@ import {
 	sponsorGitHubConfig,
 	sponsorMethods,
 } from "@/data/sponsor";
-import { resolveSponsorRecords } from "@/utils/sponsor-records";
+import {
+	resolveSponsorIssueSubmissionAvailable,
+	resolveSponsorRecords,
+} from "@/utils/sponsor-records";
 
+const canSubmitSponsorRecord = await resolveSponsorIssueSubmissionAvailable(sponsorGitHubConfig);
 const sponsorRecords = await resolveSponsorRecords(sponsorGitHubConfig);
-const submitUrl = getSponsorSubmitUrl(sponsorGitHubConfig);
+const submitUrl = canSubmitSponsorRecord ? getSponsorSubmitUrl(sponsorGitHubConfig) : "";
 
 function formatDate(value: string): string {
 	return new Date(value).toLocaleDateString("zh-CN", {
@@ -87,15 +91,29 @@ function formatDate(value: string): string {
 							标签，即会自动展示在这里。
 						</p>
 					</div>
-					<a
-						href={submitUrl}
-						target="_blank"
-						rel="noopener noreferrer"
-						class="submit-record-btn"
-					>
-						<Icon name="fa6-brands:github" class="text-[1rem]" />
-						提交赞助记录
-					</a>
+					{
+						canSubmitSponsorRecord ? (
+							<a
+								href={submitUrl}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="submit-record-btn"
+							>
+								<Icon name="fa6-brands:github" class="text-[1rem]" />
+								提交赞助记录
+							</a>
+						) : (
+							<div class="submit-record-unavailable">
+								<span class="submit-record-btn submit-record-btn-disabled">
+									<Icon name="fa6-solid:triangle-exclamation" class="text-[1rem]" />
+									提交入口暂不可用
+								</span>
+								<p class="submit-record-hint">
+									当前仓库未开启 GitHub Issues，暂时无法提交赞助记录。
+								</p>
+							</div>
+						)
+					}
 				</div>
 			</header>
 
@@ -133,7 +151,11 @@ function formatDate(value: string): string {
 					<div class="empty-record rounded-2xl p-5 md:p-6">
 						<p class="sponsor-title text-lg md:text-xl font-bold mb-2">还没有审核通过的赞助记录</p>
 						<p class="sponsor-description text-sm md:text-base leading-7">
-							你可以点击上方“提交赞助记录”，提交后我会在 GitHub 审核并展示。
+							{
+								canSubmitSponsorRecord
+									? "你可以点击上方“提交赞助记录”，提交后我会在 GitHub 审核并展示。"
+									: "仓库尚未开启 Issues，暂时无法提交新的赞助记录。"
+							}
 						</p>
 					</div>
 				)
@@ -253,5 +275,45 @@ function formatDate(value: string): string {
 		transform: translateY(-2px);
 		background: #d6ecea;
 		border-color: #b8dfda;
+	}
+
+	.submit-record-unavailable {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: 0.5rem;
+	}
+
+	.submit-record-btn-disabled {
+		cursor: not-allowed;
+		pointer-events: none;
+		background: #f1f5f4;
+		border-color: #d8e4e2;
+		color: rgba(0, 0, 0, 0.62);
+	}
+
+	.submit-record-btn-disabled:hover {
+		transform: none;
+		background: #f1f5f4;
+		border-color: #d8e4e2;
+	}
+
+	.submit-record-hint {
+		max-width: 18rem;
+		font-size: 0.8rem;
+		line-height: 1.35;
+		text-align: right;
+		color: rgba(0, 0, 0, 0.56);
+	}
+
+	@media (max-width: 767px) {
+		.submit-record-unavailable {
+			align-items: stretch;
+		}
+
+		.submit-record-hint {
+			max-width: none;
+			text-align: left;
+		}
 	}
 </style>

@@ -23,6 +23,10 @@ type GitHubIssue = {
 	pull_request?: unknown;
 };
 
+type GitHubRepo = {
+	has_issues: boolean;
+};
+
 const DEFAULT_TIMEOUT_MS = 8000;
 const DEFAULT_MAX_RECORDS = 100;
 
@@ -80,7 +84,12 @@ function parseRecord(issue: GitHubIssue): SponsorRecord {
 	const amount =
 		extractField(body, ["赞助金额", "金额", "amount", "sponsor amount"]) ||
 		"未填写";
-	const avatarText = extractField(body, ["头像链接（可选）", "头像链接", "avatar", "avatar url"]);
+	const avatarText = extractField(body, [
+		"头像链接（可选）",
+		"头像链接",
+		"avatar",
+		"avatar url",
+	]);
 	const avatar = extractUrl(avatarText) || issue.user.avatar_url;
 
 	return {
@@ -106,6 +115,32 @@ function buildRequestHeaders(): HeadersInit {
 	}
 
 	return headers;
+}
+
+export async function resolveSponsorIssueSubmissionAvailable(
+	config: SponsorGitHubConfig,
+): Promise<boolean> {
+	const parsedRepo = parseRepo(config.repo);
+	if (!parsedRepo) return false;
+
+	const apiUrl = `https://api.github.com/repos/${parsedRepo.owner}/${parsedRepo.name}`;
+	const controller = new AbortController();
+	const timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
+
+	try {
+		const response = await fetch(apiUrl, {
+			headers: buildRequestHeaders(),
+			signal: controller.signal,
+		});
+		if (!response.ok) return false;
+
+		const repo = (await response.json()) as GitHubRepo;
+		return repo.has_issues;
+	} catch {
+		return false;
+	} finally {
+		clearTimeout(timeout);
+	}
 }
 
 export async function resolveSponsorRecords(
@@ -134,9 +169,7 @@ export async function resolveSponsorRecords(
 		if (!response.ok) return [];
 
 		const issues = (await response.json()) as GitHubIssue[];
-		return issues
-			.filter((issue) => !issue.pull_request)
-			.map(parseRecord);
+		return issues.filter((issue) => !issue.pull_request).map(parseRecord);
 	} catch {
 		return [];
 	} finally {
