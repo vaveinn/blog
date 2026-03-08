@@ -9,9 +9,11 @@ export type FriendSource = {
 export const friendSources: FriendSource[] = [
 	{
 		url: "https://cloudflare.com",
+		name: "CF",
 	},
 	{
 		url: "https://github.com",
+		name: "GitHub",
 	},
 	// {
 	// 	url: "https://example.com",
