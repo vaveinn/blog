@@ -49,6 +49,10 @@ export const navBarConfig: NavBarConfig = {
 			url: "/friends/",
 		},
 		{
+			name: "赞助",
+			url: "/sponsor/",
+		},
+		{
 			name: "GitHub",
 			url: "https://github.com/accoreo", // Internal links should not include the base path, as it is automatically added
 			external: true, // Show an external link icon and will open in a new tab

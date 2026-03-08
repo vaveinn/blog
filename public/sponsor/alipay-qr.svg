@@ -1,0 +1,6 @@
+﻿<svg width="720" height="720" viewBox="0 0 720 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="720" height="720" rx="28" fill="#FFFFFF"/>
+  <rect x="26" y="26" width="668" height="668" rx="24" stroke="#CBD5E1" stroke-width="4" stroke-dasharray="12 12"/>
+  <path d="M360 204C329.55 204 305 228.55 305 259C305 289.45 329.55 314 360 314C390.45 314 415 289.45 415 259C415 228.55 390.45 204 360 204ZM272 368H448C460.15 368 470 377.85 470 390V423C470 435.15 460.15 445 448 445H272C259.85 445 250 435.15 250 423V390C250 377.85 259.85 368 272 368Z" fill="#94A3B8"/>
+  <text x="360" y="520" fill="#475569" font-size="40" font-family="Arial, Helvetica, sans-serif" text-anchor="middle">替换为支付宝收款码</text>
+</svg>

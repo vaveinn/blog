@@ -1,0 +1,257 @@
+﻿---
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { Icon } from "astro-icon/components";
+import {
+	getSponsorSubmitUrl,
+	sponsorGitHubConfig,
+	sponsorMethods,
+} from "@/data/sponsor";
+import { resolveSponsorRecords } from "@/utils/sponsor-records";
+
+const sponsorRecords = await resolveSponsorRecords(sponsorGitHubConfig);
+const submitUrl = getSponsorSubmitUrl(sponsorGitHubConfig);
+
+function formatDate(value: string): string {
+	return new Date(value).toLocaleDateString("zh-CN", {
+		year: "numeric",
+		month: "2-digit",
+		day: "2-digit",
+	});
+}
+---
+
+<MainGridLayout title="赞助" description="赞助支持页面">
+	<section class="sponsor-wall card-base relative overflow-hidden">
+		<div class="sponsor-panel relative z-10 px-6 py-7 md:px-10 md:py-9">
+			<header class="mb-6 md:mb-8">
+				<h1 class="flex items-center gap-3 text-90 text-3xl md:text-4xl font-bold mb-4">
+					<span class="sponsor-title-icon">
+						<Icon
+							name="material-symbols:favorite-rounded"
+							class="text-[1.8rem] text-black/80 dark:text-white/85"
+						/>
+					</span>
+					赞助支持
+				</h1>
+				<p class="text-75 text-base md:text-lg leading-8 mb-3">
+					如果我的内容对你有帮助，欢迎通过下方方式赞助我。你的每一份支持，都会用于网站维护和持续创作。
+				</p>
+				<p class="text-60 text-sm md:text-base leading-7">
+					可在转账备注中留下你的 GitHub 名称，然后到下方“赞助记录”提交，我审核后会展示在页面中。
+				</p>
+			</header>
+
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+				{
+					sponsorMethods.map((method) => (
+						<article class="sponsor-card rounded-2xl p-5 md:p-6 min-h-32">
+							<div class="flex items-center gap-4 mb-5">
+								<span class="payment-icon">
+									<Icon name={method.icon} class="text-[1.9rem] text-black/80" />
+								</span>
+								<div>
+									<h2 class="sponsor-title text-xl md:text-2xl leading-none mb-2">{method.name}</h2>
+									<p class="sponsor-description text-base leading-6">{method.hint}</p>
+								</div>
+							</div>
+							<img
+								src={method.qrImage}
+								alt={`${method.name} 收款码`}
+								class="sponsor-qr w-full max-w-[19rem] mx-auto rounded-xl border"
+								loading="lazy"
+							/>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<section class="sponsor-wall card-base relative overflow-hidden mt-6">
+		<div class="sponsor-panel relative z-10 px-6 py-7 md:px-10 md:py-9">
+			<header class="mb-6 md:mb-8">
+				<div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+					<div>
+						<h2 class="flex items-center gap-3 text-90 text-2xl md:text-3xl font-bold mb-3">
+							<span class="sponsor-title-icon">
+								<Icon
+									name="material-symbols:star-rounded"
+									class="text-[1.65rem] text-black/80 dark:text-white/85"
+								/>
+							</span>
+							赞助记录
+						</h2>
+						<p class="text-75 text-sm md:text-base leading-7">
+							赞助者通过 GitHub 提交记录，我审核后为 Issue 添加
+							<code>sponsor-approved</code>
+							标签，即会自动展示在这里。
+						</p>
+					</div>
+					<a
+						href={submitUrl}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="submit-record-btn"
+					>
+						<Icon name="fa6-brands:github" class="text-[1rem]" />
+						提交赞助记录
+					</a>
+				</div>
+			</header>
+
+			{
+				sponsorRecords.length > 0 ? (
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+						{sponsorRecords.map((record) => (
+							<article class="sponsor-card rounded-2xl p-5 md:p-6">
+								<div class="flex items-center gap-4">
+									<img
+										src={record.avatar}
+										alt={`${record.name} 头像`}
+										class="h-14 w-14 rounded-xl object-cover border sponsor-avatar-border"
+										loading="lazy"
+										referrerpolicy="no-referrer"
+									/>
+									<div class="min-w-0 flex-1">
+										<p class="sponsor-title text-xl font-bold truncate">{record.name}</p>
+										<p class="sponsor-amount text-base font-semibold mt-1">赞助金额：{record.amount}</p>
+										<p class="sponsor-meta text-sm mt-2">提交时间：{formatDate(record.submittedAt)}</p>
+									</div>
+								</div>
+								<div class="flex gap-4 mt-4 text-sm">
+									<a href={record.profileUrl} target="_blank" rel="noopener noreferrer" class="record-link">
+										GitHub 主页
+									</a>
+									<a href={record.issueUrl} target="_blank" rel="noopener noreferrer" class="record-link">
+										记录详情
+									</a>
+								</div>
+							</article>
+						))}
+					</div>
+				) : (
+					<div class="empty-record rounded-2xl p-5 md:p-6">
+						<p class="sponsor-title text-lg md:text-xl font-bold mb-2">还没有审核通过的赞助记录</p>
+						<p class="sponsor-description text-sm md:text-base leading-7">
+							你可以点击上方“提交赞助记录”，提交后我会在 GitHub 审核并展示。
+						</p>
+					</div>
+				)
+			}
+		</div>
+	</section>
+</MainGridLayout>
+
+<style>
+	.sponsor-wall {
+		min-height: 14rem;
+		background: #ffffff;
+	}
+
+	.sponsor-panel {
+		background: #ffffff;
+	}
+
+	.sponsor-title-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		height: 3rem;
+		width: 3rem;
+		border-radius: 0.75rem;
+		background: oklch(0.76 0.16 170);
+		box-shadow: 0 8px 20px rgba(40, 170, 150, 0.35);
+	}
+
+	.sponsor-card {
+		background: #e0f2f1;
+		border: 1px solid #c8e7e4;
+		transition:
+			transform 180ms ease,
+			border-color 180ms ease,
+			background-color 180ms ease;
+	}
+
+	.sponsor-card:hover {
+		transform: translateY(-2px);
+		border-color: #b8dfda;
+		background: #d6ecea;
+	}
+
+	.sponsor-title {
+		color: rgba(0, 0, 0, 0.84);
+	}
+
+	.sponsor-description {
+		color: rgba(0, 0, 0, 0.7);
+	}
+
+	.sponsor-meta {
+		color: rgba(0, 0, 0, 0.58);
+	}
+
+	.sponsor-amount {
+		color: rgba(0, 0, 0, 0.76);
+	}
+
+	.payment-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		height: 3rem;
+		width: 3rem;
+		border-radius: 0.75rem;
+		background: rgba(255, 255, 255, 0.7);
+		border: 1px solid rgba(0, 0, 0, 0.08);
+	}
+
+	.sponsor-qr {
+		border-color: rgba(0, 0, 0, 0.12);
+		background: rgba(255, 255, 255, 0.86);
+	}
+
+	.sponsor-avatar-border {
+		border-color: rgba(0, 0, 0, 0.12);
+	}
+
+	.empty-record {
+		background: #e0f2f1;
+		border: 1px solid #c8e7e4;
+	}
+
+	.record-link {
+		color: rgba(0, 0, 0, 0.65);
+		font-weight: 600;
+		text-decoration: underline;
+		text-underline-offset: 0.15rem;
+		transition: color 180ms ease;
+	}
+
+	.record-link:hover {
+		color: rgba(0, 0, 0, 0.88);
+	}
+
+	.submit-record-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		height: 2.75rem;
+		padding: 0 1rem;
+		border-radius: 0.75rem;
+		font-weight: 700;
+		background: #e0f2f1;
+		color: rgba(0, 0, 0, 0.86);
+		border: 1px solid #c8e7e4;
+		transition:
+			transform 180ms ease,
+			background-color 180ms ease,
+			border-color 180ms ease;
+	}
+
+	.submit-record-btn:hover {
+		transform: translateY(-2px);
+		background: #d6ecea;
+		border-color: #b8dfda;
+	}
+</style>

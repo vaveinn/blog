@@ -1,0 +1,58 @@
+﻿name: Sponsor Record
+description: 提交赞助记录，审核通过后会展示在赞助页面
+title: "[赞助记录] "
+labels: ["sponsor-submission"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢你的支持！
+
+        请填写以下信息。提交后，维护者会审核内容。
+        通过审核并添加 `sponsor-approved` 标签后，记录会自动显示在赞助页面。
+
+  - type: input
+    id: sponsor-name
+    attributes:
+      label: 赞助者名称
+      description: 展示在赞助墙上的名称
+      placeholder: 例如：Lucas
+    validations:
+      required: true
+
+  - type: input
+    id: sponsor-amount
+    attributes:
+      label: 赞助金额
+      description: 可带货币单位
+      placeholder: 例如：￥66
+    validations:
+      required: true
+
+  - type: input
+    id: sponsor-avatar
+    attributes:
+      label: 头像链接（可选）
+      description: 留空则默认使用 GitHub 头像
+      placeholder: https://example.com/avatar.png
+
+  - type: input
+    id: payment-time
+    attributes:
+      label: 赞助时间（可选）
+      placeholder: 例如：2026-03-08
+
+  - type: textarea
+    id: sponsor-note
+    attributes:
+      label: 留言（可选）
+      description: 可填写一句想说的话
+      placeholder: 感谢你的文章，帮我解决了很多问题！
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: 提交确认
+      options:
+        - label: 我确认以上信息真实有效，且同意公开展示赞助名称、金额和头像。
+          required: true
