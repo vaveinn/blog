@@ -11,9 +11,12 @@ import {
 	resolveSponsorRecords,
 } from "@/utils/sponsor-records";
 
-const canSubmitSponsorRecord = await resolveSponsorIssueSubmissionAvailable(sponsorGitHubConfig);
+const canSubmitSponsorRecord =
+	await resolveSponsorIssueSubmissionAvailable(sponsorGitHubConfig);
 const sponsorRecords = await resolveSponsorRecords(sponsorGitHubConfig);
-const submitUrl = canSubmitSponsorRecord ? getSponsorSubmitUrl(sponsorGitHubConfig) : "";
+const submitUrl = canSubmitSponsorRecord
+	? getSponsorSubmitUrl(sponsorGitHubConfig)
+	: "";
 
 function formatDate(value: string): string {
 	return new Date(value).toLocaleDateString("zh-CN", {
@@ -28,7 +31,9 @@ function formatDate(value: string): string {
 	<section class="sponsor-wall card-base relative overflow-hidden">
 		<div class="sponsor-panel relative z-10 px-6 py-7 md:px-10 md:py-9">
 			<header class="mb-6 md:mb-8">
-				<h1 class="flex items-center gap-3 text-90 text-3xl md:text-4xl font-bold mb-4">
+				<h1
+					class="flex items-center gap-3 text-90 text-3xl md:text-4xl font-bold mb-4"
+				>
 					<span class="sponsor-title-icon">
 						<Icon
 							name="material-symbols:favorite-rounded"
@@ -41,7 +46,7 @@ function formatDate(value: string): string {
 					如果我的内容对你有帮助，欢迎通过下方方式赞助我。你的每一份支持，都会用于网站维护和持续创作。
 				</p>
 				<p class="text-60 text-sm md:text-base leading-7">
-					可在转账备注中留下你的 GitHub 名称，然后到下方“赞助记录”提交，我审核后会展示在页面中。
+					可在备注中留下你的名称，然后到下方“赞助记录”提交，展示在页面中。
 				</p>
 			</header>
 
@@ -51,11 +56,18 @@ function formatDate(value: string): string {
 						<article class="sponsor-card rounded-2xl p-5 md:p-6 min-h-32">
 							<div class="flex items-center gap-4 mb-5">
 								<span class="payment-icon">
-									<Icon name={method.icon} class="text-[1.9rem] text-black/80" />
+									<Icon
+										name={method.icon}
+										class="text-[1.9rem] text-black/80"
+									/>
 								</span>
 								<div>
-									<h2 class="sponsor-title text-xl md:text-2xl leading-none mb-2">{method.name}</h2>
-									<p class="sponsor-description text-base leading-6">{method.hint}</p>
+									<h2 class="sponsor-title text-xl md:text-2xl leading-none mb-2">
+										{method.name}
+									</h2>
+									<p class="sponsor-description text-base leading-6">
+										{method.hint}
+									</p>
 								</div>
 							</div>
 							<img
@@ -74,9 +86,13 @@ function formatDate(value: string): string {
 	<section class="sponsor-wall card-base relative overflow-hidden mt-6">
 		<div class="sponsor-panel relative z-10 px-6 py-7 md:px-10 md:py-9">
 			<header class="mb-6 md:mb-8">
-				<div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+				<div
+					class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
+				>
 					<div>
-						<h2 class="flex items-center gap-3 text-90 text-2xl md:text-3xl font-bold mb-3">
+						<h2
+							class="flex items-center gap-3 text-90 text-2xl md:text-3xl font-bold mb-3"
+						>
 							<span class="sponsor-title-icon">
 								<Icon
 									name="material-symbols:star-rounded"
@@ -86,9 +102,8 @@ function formatDate(value: string): string {
 							赞助记录
 						</h2>
 						<p class="text-75 text-sm md:text-base leading-7">
-							赞助者通过 GitHub 提交记录，我审核后为 Issue 添加
+							点击提交赞助记录即可被展示在这里，感谢每一位支持的朋友！
 							<code>sponsor-approved</code>
-							标签，即会自动展示在这里。
 						</p>
 					</div>
 					{
@@ -99,17 +114,24 @@ function formatDate(value: string): string {
 								rel="noopener noreferrer"
 								class="submit-record-btn"
 							>
-								<Icon name="fa6-brands:github" class="text-[1rem]" />
-								提交赞助记录
+								<Icon
+									name="fa6-brands:github"
+									class="text-[1rem]"
+								/>
+								提交入口
 							</a>
 						) : (
 							<div class="submit-record-unavailable">
 								<span class="submit-record-btn submit-record-btn-disabled">
-									<Icon name="fa6-solid:triangle-exclamation" class="text-[1rem]" />
+									<Icon
+										name="fa6-solid:triangle-exclamation"
+										class="text-[1rem]"
+									/>
 									提交入口暂不可用
 								</span>
 								<p class="submit-record-hint">
-									当前仓库未开启 GitHub Issues，暂时无法提交赞助记录。
+									当前仓库未开启 GitHub
+									Issues，暂时无法提交赞助记录。
 								</p>
 							</div>
 						)
@@ -131,16 +153,33 @@ function formatDate(value: string): string {
 										referrerpolicy="no-referrer"
 									/>
 									<div class="min-w-0 flex-1">
-										<p class="sponsor-title text-xl font-bold truncate">{record.name}</p>
-										<p class="sponsor-amount text-base font-semibold mt-1">赞助金额：{record.amount}</p>
-										<p class="sponsor-meta text-sm mt-2">提交时间：{formatDate(record.submittedAt)}</p>
+										<p class="sponsor-title text-xl font-bold truncate">
+											{record.name}
+										</p>
+										<p class="sponsor-amount text-base font-semibold mt-1">
+											赞助金额：{record.amount}
+										</p>
+										<p class="sponsor-meta text-sm mt-2">
+											提交时间：
+											{formatDate(record.submittedAt)}
+										</p>
 									</div>
 								</div>
 								<div class="flex gap-4 mt-4 text-sm">
-									<a href={record.profileUrl} target="_blank" rel="noopener noreferrer" class="record-link">
+									<a
+										href={record.profileUrl}
+										target="_blank"
+										rel="noopener noreferrer"
+										class="record-link"
+									>
 										GitHub 主页
 									</a>
-									<a href={record.issueUrl} target="_blank" rel="noopener noreferrer" class="record-link">
+									<a
+										href={record.issueUrl}
+										target="_blank"
+										rel="noopener noreferrer"
+										class="record-link"
+									>
 										记录详情
 									</a>
 								</div>
@@ -149,13 +188,13 @@ function formatDate(value: string): string {
 					</div>
 				) : (
 					<div class="empty-record rounded-2xl p-5 md:p-6">
-						<p class="sponsor-title text-lg md:text-xl font-bold mb-2">还没有审核通过的赞助记录</p>
+						<p class="sponsor-title text-lg md:text-xl font-bold mb-2">
+							还没有审核通过的赞助记录
+						</p>
 						<p class="sponsor-description text-sm md:text-base leading-7">
-							{
-								canSubmitSponsorRecord
-									? "你可以点击上方“提交赞助记录”，提交后我会在 GitHub 审核并展示。"
-									: "仓库尚未开启 Issues，暂时无法提交新的赞助记录。"
-							}
+							{canSubmitSponsorRecord
+								? "你可以点击上方“提交赞助记录”，提交后我会在 GitHub 审核并展示。"
+								: "仓库尚未开启 Issues，暂时无法提交新的赞助记录。"}
 						</p>
 					</div>
 				)
