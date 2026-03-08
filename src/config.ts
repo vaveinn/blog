@@ -1,4 +1,5 @@
 import type {
+	CommentsConfig,
 	ExpressiveCodeConfig,
 	LicenseConfig,
 	NavBarConfig,
@@ -83,6 +84,22 @@ export const licenseConfig: LicenseConfig = {
 	enable: true,
 	name: "CC BY-NC-SA 4.0",
 	url: "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+};
+
+export const commentsConfig: CommentsConfig = {
+	enable: true,
+	provider: "giscus",
+	repo: "vaveinn/blog",
+	repoId: "R_kgDORhUwew",
+	category: "General",
+	categoryId: "DIC_kwDORhUwe84C38Il",
+	mapping: "pathname",
+	strict: false,
+	reactionsEnabled: true,
+	emitMetadata: false,
+	inputPosition: "bottom",
+	lang: "zh-CN",
+	theme: "preferred_color_scheme",
 };
 
 export const expressiveCodeConfig: ExpressiveCodeConfig = {

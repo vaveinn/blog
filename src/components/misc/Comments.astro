@@ -1,0 +1,49 @@
+---
+import { commentsConfig, siteConfig } from "../../config";
+import I18nKey from "../../i18n/i18nKey";
+import { i18n } from "../../i18n/translation";
+
+const lang = commentsConfig.lang || siteConfig.lang.replace("_", "-");
+const mapping = commentsConfig.mapping || "pathname";
+const inputPosition = commentsConfig.inputPosition || "top";
+const theme = commentsConfig.theme || "preferred_color_scheme";
+
+const isConfigured = Boolean(
+	commentsConfig.enable &&
+	commentsConfig.repo &&
+	commentsConfig.repoId &&
+	commentsConfig.category &&
+	commentsConfig.categoryId,
+);
+---
+
+{commentsConfig.enable && (
+	<div class="card-base px-6 md:px-9 py-6 mb-6 comments-container onload-animation">
+		<div class="font-bold text-xl text-black/90 dark:text-white/90 mb-4">
+			{i18n(I18nKey.comments)}
+		</div>
+
+		{isConfigured ? (
+			<giscus-comments
+				repo={commentsConfig.repo}
+				repo-id={commentsConfig.repoId}
+				category={commentsConfig.category}
+				category-id={commentsConfig.categoryId}
+				mapping={mapping}
+				term={commentsConfig.term || ""}
+				strict={commentsConfig.strict ? "1" : "0"}
+				reactions-enabled={commentsConfig.reactionsEnabled === false ? "0" : "1"}
+				emit-metadata={commentsConfig.emitMetadata ? "1" : "0"}
+				input-position={inputPosition}
+				lang={lang}
+				theme={theme}
+				loading="lazy"
+			></giscus-comments>
+		) : (
+			<div class="rounded-xl border border-dashed border-[var(--line-divider)] bg-[var(--btn-regular-bg)] px-4 py-3 text-sm text-black/60 dark:text-white/60">
+				评论功能尚未完成配置。请在 <code>src/config.ts</code> 的 <code>commentsConfig</code>
+				中填写 <code>categoryId</code>，并确认仓库已安装 Giscus GitHub App。
+			</div>
+		)}
+	</div>
+)}

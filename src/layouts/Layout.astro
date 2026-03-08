@@ -548,3 +548,98 @@ if (window.swup) {
 	document.addEventListener("swup:enable", setup)
 }
 </script>
+
+<script is:inline>
+function resolveGiscusTheme(requestedTheme) {
+	if (requestedTheme && requestedTheme !== "preferred_color_scheme") {
+		return requestedTheme;
+	}
+	return document.documentElement.classList.contains("dark")
+		? "transparent_dark"
+		: "light";
+}
+
+function updateGiscusTheme(element) {
+	const iframe = element.querySelector("iframe.giscus-frame");
+	if (!iframe || !iframe.contentWindow) return;
+
+	iframe.contentWindow.postMessage(
+		{
+			giscus: {
+				setConfig: {
+					theme: resolveGiscusTheme(element.getAttribute("theme")),
+				},
+			},
+		},
+		"https://giscus.app",
+	);
+}
+
+class GiscusComments extends HTMLElement {
+	connectedCallback() {
+		if (this.dataset.initialized === "true") {
+			updateGiscusTheme(this);
+			return;
+		}
+
+		const repo = this.getAttribute("repo");
+		const repoId = this.getAttribute("repo-id");
+		const category = this.getAttribute("category");
+		const categoryId = this.getAttribute("category-id");
+
+		if (!(repo && repoId && category && categoryId)) return;
+
+		this.dataset.initialized = "true";
+		this.innerHTML = "";
+
+		const script = document.createElement("script");
+		script.src = "https://giscus.app/client.js";
+		script.async = true;
+		script.crossOrigin = "anonymous";
+		script.setAttribute("data-repo", repo);
+		script.setAttribute("data-repo-id", repoId);
+		script.setAttribute("data-category", category);
+		script.setAttribute("data-category-id", categoryId);
+		script.setAttribute("data-mapping", this.getAttribute("mapping") || "pathname");
+		script.setAttribute("data-term", this.getAttribute("term") || "");
+		script.setAttribute("data-strict", this.getAttribute("strict") || "0");
+		script.setAttribute(
+			"data-reactions-enabled",
+			this.getAttribute("reactions-enabled") || "1",
+		);
+		script.setAttribute(
+			"data-emit-metadata",
+			this.getAttribute("emit-metadata") || "0",
+		);
+		script.setAttribute(
+			"data-input-position",
+			this.getAttribute("input-position") || "top",
+		);
+		script.setAttribute("data-lang", this.getAttribute("lang") || "en");
+		script.setAttribute(
+			"data-theme",
+			resolveGiscusTheme(this.getAttribute("theme")),
+		);
+		script.setAttribute("data-loading", this.getAttribute("loading") || "lazy");
+
+		this.appendChild(script);
+	}
+}
+
+if (!customElements.get("giscus-comments")) {
+	customElements.define("giscus-comments", GiscusComments);
+}
+
+if (!window.__giscusThemeObserver) {
+	window.__giscusThemeObserver = new MutationObserver(() => {
+		document.querySelectorAll("giscus-comments").forEach((element) => {
+			updateGiscusTheme(element);
+		});
+	});
+
+	window.__giscusThemeObserver.observe(document.documentElement, {
+		attributes: true,
+		attributeFilter: ["class"],
+	});
+}
+</script>
