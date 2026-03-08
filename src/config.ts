@@ -62,21 +62,19 @@ export const profileConfig: ProfileConfig = {
 	bio: "电气工程专业学生，业余时间喜欢编程和写博客。", // A short bio or description of the author
 	links: [
 		{
-			name: "Twitter",
-			icon: "fa6-brands:twitter", // Visit https://icones.js.org/ for icon codes
-			// You will need to install the corresponding icon set if it's not already included
-			// `pnpm add @iconify-json/<icon-set-name>`
-			url: "https://twitter.com",
+			name: "Telegram",
+			icon: "fa6-brands:telegram",
+			url: "https://t.me/auepyc",
 		},
 		{
-			name: "Steam",
-			icon: "fa6-brands:steam",
-			url: "https://store.steampowered.com",
+			name: "邮箱",
+			icon: "fa6-solid:envelope",
+			url: "mailto:vaveinn@outlook.com",
 		},
 		{
-			name: "GitHub",
-			icon: "fa6-brands:github",
-			url: "https://github.com/saicaca/fuwari",
+			name: "QQ",
+			icon: "fa6-brands:qq",
+			url: "https://wpa.qq.com/msgrd?v=3&uin=2674338676&site=qq&menu=yes",
 		},
 	],
 };
