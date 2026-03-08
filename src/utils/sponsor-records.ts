@@ -132,12 +132,13 @@ export async function resolveSponsorIssueSubmissionAvailable(
 			headers: buildRequestHeaders(),
 			signal: controller.signal,
 		});
-		if (!response.ok) return false;
+		// If repo metadata can't be fetched (e.g. rate limit/network), keep submit entry available.
+		if (!response.ok) return true;
 
 		const repo = (await response.json()) as GitHubRepo;
-		return repo.has_issues;
+		return repo.has_issues !== false;
 	} catch {
-		return false;
+		return true;
 	} finally {
 		clearTimeout(timeout);
 	}
