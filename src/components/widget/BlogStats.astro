@@ -46,7 +46,12 @@ const counterKey = "site-visits";
 ---
 
 <WidgetLayout id="blog-stats" name="站点数据" class="onload-animation" style="animation-delay: 120ms">
-	<div class="stats-list">
+	<div
+		id="blog-stats-data"
+		class="stats-list"
+		data-counter-namespace={counterNamespace}
+		data-counter-key={counterKey}
+	>
 		<div class="stats-item">
 			<div class="stats-label">
 				<Icon name="fa6-solid:file-lines" class="stats-icon" />
@@ -124,43 +129,58 @@ const counterKey = "site-visits";
 	}
 </style>
 
-<script is:inline define:vars={{ counterNamespace, counterKey }}>
-	const visitElement = document.getElementById("site-visit-count");
-	const ipElement = document.getElementById("site-visitor-ip");
-
+<script is:inline>
 	function setText(el, value) {
 		if (el) {
 			el.textContent = value;
 		}
 	}
 
-	async function loadVisitCount() {
-		try {
-			const response = await fetch(
-				`https://api.countapi.xyz/hit/${counterNamespace}/${counterKey}`,
-				{ cache: "no-store" },
-			);
-			if (!response.ok) throw new Error("visit count request failed");
-
-			const data = await response.json();
-			if (typeof data?.value !== "number") throw new Error("invalid visit value");
-			setText(visitElement, new Intl.NumberFormat("zh-CN").format(data.value));
-		} catch {
-			setText(visitElement, "N/A");
+	async function fetchJson(endpoint) {
+		const response = await fetch(endpoint, { cache: "no-store" });
+		if (!response.ok) {
+			throw new Error(`request failed: ${response.status}`);
 		}
+		return response.json();
 	}
 
-	async function loadVisitorIp() {
-		const endpoints = [
-			"https://api.ipify.org?format=json",
-			"https://api64.ipify.org?format=json",
+	async function loadVisitCount(namespace, key, visitElement) {
+		const visitEndpoints = [
+			`https://api.counterapi.dev/v1/${namespace}/${key}/up`,
+			`https://api.countapi.xyz/hit/${namespace}/${key}`,
 		];
 
-		for (const endpoint of endpoints) {
+		for (const endpoint of visitEndpoints) {
 			try {
-				const response = await fetch(endpoint, { cache: "no-store" });
-				if (!response.ok) continue;
-				const data = await response.json();
+				const data = await fetchJson(endpoint);
+				const value =
+					typeof data?.count === "number"
+						? data.count
+						: typeof data?.value === "number"
+							? data.value
+							: NaN;
+				if (!Number.isNaN(value)) {
+					setText(visitElement, new Intl.NumberFormat("zh-CN").format(value));
+					return;
+				}
+			} catch {
+				// try next endpoint
+			}
+		}
+
+		setText(visitElement, "N/A");
+	}
+
+	async function loadVisitorIp(ipElement) {
+		const ipEndpoints = [
+			"https://api64.ipify.org?format=json",
+			"https://api.ipify.org?format=json",
+			"https://api.ip.sb/jsonip",
+		];
+
+		for (const endpoint of ipEndpoints) {
+			try {
+				const data = await fetchJson(endpoint);
 				if (typeof data?.ip === "string" && data.ip.length > 0) {
 					setText(ipElement, data.ip);
 					return;
@@ -170,9 +190,31 @@ const counterKey = "site-visits";
 			}
 		}
 
-		setText(ipElement, "不可用");
+		setText(ipElement, "N/A");
 	}
 
-	loadVisitCount();
-	loadVisitorIp();
+	function initBlogStats() {
+		const dataElement = document.getElementById("blog-stats-data");
+		const visitElement = document.getElementById("site-visit-count");
+		const ipElement = document.getElementById("site-visitor-ip");
+		if (!dataElement || !visitElement || !ipElement) return;
+
+		const namespace = dataElement.dataset.counterNamespace || "fuwari-blog";
+		const key = dataElement.dataset.counterKey || "site-visits";
+
+		loadVisitCount(namespace, key, visitElement);
+		loadVisitorIp(ipElement);
+	}
+
+	if (!window.__blogStatsInitialized) {
+		window.__blogStatsInitialized = true;
+
+		if (document.readyState === "loading") {
+			document.addEventListener("DOMContentLoaded", initBlogStats);
+		} else {
+			initBlogStats();
+		}
+
+		document.addEventListener("swup:contentReplaced", initBlogStats);
+	}
 </script>
