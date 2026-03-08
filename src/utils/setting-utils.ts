@@ -1,8 +1,6 @@
 import {
-	AUTO_MODE,
-	DARK_MODE,
-	DEFAULT_THEME,
 	LIGHT_MODE,
+	DEFAULT_THEME,
 } from "@constants/constants.ts";
 import { expressiveCodeConfig } from "@/config";
 import type { LIGHT_DARK_MODE } from "@/types/config";
@@ -27,22 +25,10 @@ export function setHue(hue: number): void {
 	r.style.setProperty("--hue", String(hue));
 }
 
-export function applyThemeToDocument(theme: LIGHT_DARK_MODE) {
-	switch (theme) {
-		case LIGHT_MODE:
-			document.documentElement.classList.remove("dark");
-			break;
-		case DARK_MODE:
-			document.documentElement.classList.add("dark");
-			break;
-		case AUTO_MODE:
-			if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-				document.documentElement.classList.add("dark");
-			} else {
-				document.documentElement.classList.remove("dark");
-			}
-			break;
-	}
+export function applyThemeToDocument(_theme: LIGHT_DARK_MODE) {
+	// Force light mode regardless of requested mode.
+	document.documentElement.classList.remove("dark");
+	localStorage.setItem("theme", LIGHT_MODE);
 
 	// Set the theme for Expressive Code
 	document.documentElement.setAttribute(
