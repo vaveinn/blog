@@ -1,70 +1,36 @@
 ---
+import demoAvatar from "@assets/images/demo-avatar.png";
+import { friendSources } from "@/data/friends";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { resolveFriendLinks } from "@utils/friend-links";
 import { Icon } from "astro-icon/components";
-import demoAvatar from "../assets/images/demo-avatar.png";
-import friendBackground from "../assets/images/demo-banner.png";
 
-type FriendLink = {
-	name: string;
-	description: string;
-	url: string;
-	avatar: string;
-};
-
-const friendLinks: FriendLink[] = [
-	{
-		name: "示例友链 A",
-		description: "这里填写你朋友站点的介绍。",
-		url: "https://example.com",
-		avatar: demoAvatar.src,
-	},
-	{
-		name: "示例友链 B",
-		description: "支持添加任意外链站点。",
-		url: "https://example.org",
-		avatar: demoAvatar.src,
-	},
-	{
-		name: "示例友链 C",
-		description: "点击卡片可直接跳转。",
-		url: "https://example.net",
-		avatar: demoAvatar.src,
-	},
-	{
-		name: "示例友链 D",
-		description: "卡片背景使用毛玻璃效果。",
-		url: "https://example.edu",
-		avatar: demoAvatar.src,
-	},
-];
+const friends = await resolveFriendLinks(friendSources, {
+	fallbackAvatar: demoAvatar.src,
+});
 ---
 
-<MainGridLayout title="友链" description="我的友链页面">
-	<section class="friend-wall relative rounded-[var(--radius-large)] overflow-hidden">
-		<img
-			src={friendBackground.src}
-			alt="友链页面背景图"
-			class="absolute inset-0 h-full w-full object-cover friend-bg"
-			loading="eager"
-		/>
-		<div class="absolute inset-0 friend-mask"></div>
-
-		<div class="relative z-10 px-6 py-7 md:px-10 md:py-9">
+<MainGridLayout title="友链" description="友链页面">
+	<section class="friend-wall card-base relative overflow-hidden">
+		<div class="friend-panel relative z-10 px-6 py-7 md:px-10 md:py-9">
 			<header class="mb-6 md:mb-8">
-				<h1 class="flex items-center gap-3 text-white text-3xl md:text-4xl font-bold mb-4">
+				<h1 class="flex items-center gap-3 text-90 text-3xl md:text-4xl font-bold mb-4">
 					<span class="friend-title-icon">
-						<Icon name="material-symbols:group-rounded" class="text-[1.8rem] text-black/80" />
+						<Icon
+							name="material-symbols:group-rounded"
+							class="text-[1.8rem] text-black/80 dark:text-white/85"
+						/>
 					</span>
 					友链
 				</h1>
-				<p class="text-white/85 text-base md:text-lg leading-8">
-					点击任意友链卡片即可跳转，整体背景采用图片叠加毛玻璃效果。
+				<p class="text-75 text-base md:text-lg leading-8">
+					在 <code>src/data/friends.ts</code> 添加网址即可自动读取网站图标和简介。
 				</p>
 			</header>
 
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
 				{
-					friendLinks.map((friend) => (
+					friends.map((friend) => (
 						<a
 							href={friend.url}
 							target="_blank"
@@ -74,18 +40,22 @@ const friendLinks: FriendLink[] = [
 							<div class="flex items-start gap-4">
 								<img
 									src={friend.avatar}
-									alt={`${friend.name} 的头像`}
-									class="h-12 w-12 rounded-xl object-cover border border-white/30"
+									alt={`${friend.name} icon`}
+									class="h-12 w-12 rounded-xl object-cover border friend-avatar-border"
 									loading="lazy"
+									referrerpolicy="no-referrer"
+									onerror={`this.onerror=null;this.src='${demoAvatar.src}';`}
 								/>
 								<div class="min-w-0 flex-1">
-									<h2 class="text-white font-bold text-2xl mb-1 truncate">{friend.name}</h2>
-									<p class="text-white/80 text-base leading-7 mb-2">{friend.description}</p>
-									<p class="text-white/70 text-sm truncate">{friend.url}</p>
+									<h2 class="friend-title text-xl md:text-2xl mb-1 truncate">{friend.name}</h2>
+									<p class="friend-description text-base leading-7 mb-2 line-clamp-2">
+										{friend.description}
+									</p>
+									<p class="friend-url text-sm truncate">{friend.url}</p>
 								</div>
 								<Icon
 									name="fa6-solid:arrow-up-right-from-square"
-									class="text-white/55 group-hover:text-white/90 mt-1 transition"
+									class="friend-arrow mt-1 transition"
 								/>
 							</div>
 						</a>
@@ -99,18 +69,19 @@ const friendLinks: FriendLink[] = [
 <style>
 	.friend-wall {
 		min-height: 32rem;
+		background: var(--card-bg);
 	}
 
-	.friend-bg {
-		transform: scale(1.08);
-		filter: blur(2px) saturate(1.05);
-	}
-
-	.friend-mask {
+	.friend-panel {
 		background:
-			radial-gradient(ellipse at top left, rgba(255, 161, 204, 0.3), transparent 45%),
-			linear-gradient(135deg, rgba(18, 22, 28, 0.68), rgba(12, 14, 18, 0.78));
+			radial-gradient(
+				circle at 20% 10%,
+				rgba(255, 255, 255, 0.28),
+				rgba(255, 255, 255, 0) 42%
+			),
+			linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(0, 0, 0, 0.06));
 		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
 	}
 
 	.friend-title-icon {
@@ -120,13 +91,13 @@ const friendLinks: FriendLink[] = [
 		height: 3rem;
 		width: 3rem;
 		border-radius: 0.75rem;
-		background: rgba(248, 140, 185, 0.95);
-		box-shadow: 0 8px 20px rgba(244, 114, 182, 0.35);
+		background: oklch(0.76 0.16 170);
+		box-shadow: 0 8px 20px rgba(40, 170, 150, 0.35);
 	}
 
 	.friend-card {
-		background: rgba(15, 18, 24, 0.38);
-		border: 1px solid rgba(255, 255, 255, 0.18);
+		background: rgba(255, 255, 255, 0.38);
+		border: 1px solid rgba(255, 255, 255, 0.36);
 		backdrop-filter: blur(14px) saturate(1.1);
 		-webkit-backdrop-filter: blur(14px) saturate(1.1);
 		transition:
@@ -137,7 +108,76 @@ const friendLinks: FriendLink[] = [
 
 	.friend-card:hover {
 		transform: translateY(-2px);
-		border-color: rgba(255, 255, 255, 0.34);
-		background: rgba(15, 18, 24, 0.5);
+		border-color: rgba(255, 255, 255, 0.68);
+		background: rgba(255, 255, 255, 0.48);
+	}
+
+	.friend-title {
+		color: rgba(0, 0, 0, 0.84);
+		font-weight: 700;
+	}
+
+	.friend-description {
+		color: rgba(0, 0, 0, 0.7);
+	}
+
+	.friend-url {
+		color: rgba(0, 0, 0, 0.58);
+	}
+
+	.friend-arrow {
+		color: rgba(0, 0, 0, 0.5);
+	}
+
+	.friend-card:hover .friend-arrow {
+		color: rgba(0, 0, 0, 0.82);
+	}
+
+	.friend-avatar-border {
+		border-color: rgba(0, 0, 0, 0.12);
+	}
+
+	:global(.dark) .friend-panel {
+		background:
+			radial-gradient(
+				circle at 20% 10%,
+				rgba(255, 255, 255, 0.06),
+				rgba(255, 255, 255, 0) 42%
+			),
+			linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.2));
+	}
+
+	:global(.dark) .friend-card {
+		background: rgba(18, 22, 30, 0.42);
+		border-color: rgba(255, 255, 255, 0.18);
+	}
+
+	:global(.dark) .friend-card:hover {
+		background: rgba(18, 22, 30, 0.56);
+		border-color: rgba(255, 255, 255, 0.32);
+	}
+
+	:global(.dark) .friend-title {
+		color: rgba(255, 255, 255, 0.92);
+	}
+
+	:global(.dark) .friend-description {
+		color: rgba(255, 255, 255, 0.78);
+	}
+
+	:global(.dark) .friend-url {
+		color: rgba(255, 255, 255, 0.62);
+	}
+
+	:global(.dark) .friend-arrow {
+		color: rgba(255, 255, 255, 0.56);
+	}
+
+	:global(.dark) .friend-card:hover .friend-arrow {
+		color: rgba(255, 255, 255, 0.9);
+	}
+
+	:global(.dark) .friend-avatar-border {
+		border-color: rgba(255, 255, 255, 0.2);
 	}
 </style>
