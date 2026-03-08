@@ -150,13 +150,9 @@ async function resolveOneFriend(
 	const defaultHostname = getHostname(normalizedUrl);
 
 	const initialName = cleanText(source.name) || defaultHostname;
-	const initialDescription =
-		cleanText(source.description) || `Visit ${defaultHostname}.`;
+	const initialDescription = `Visit ${defaultHostname}.`;
 	const initialAvatar =
-		cleanText(source.avatar) ||
-		makeDomainIconUrl(defaultHostname) ||
-		options.fallbackAvatar ||
-		"";
+		makeDomainIconUrl(defaultHostname) || options.fallbackAvatar || "";
 
 	const page = await fetchHtml(normalizedUrl, timeoutMs);
 	if (!page) {
@@ -170,10 +166,8 @@ async function resolveOneFriend(
 
 	const realHostname = getHostname(page.finalUrl);
 	const fallbackName = cleanText(source.name) || realHostname || initialName;
-	const fallbackDescription =
-		cleanText(source.description) || initialDescription;
+	const fallbackDescription = initialDescription;
 	const fallbackAvatar =
-		cleanText(source.avatar) ||
 		makeDomainIconUrl(realHostname) ||
 		makeDomainIconUrl(defaultHostname) ||
 		options.fallbackAvatar ||
@@ -186,7 +180,6 @@ async function resolveOneFriend(
 		getTitle(page.html) ||
 		fallbackName;
 	const detectedDescription =
-		cleanText(source.description) ||
 		getMetaContent(page.html, [
 			"description",
 			"og:description",
@@ -194,9 +187,7 @@ async function resolveOneFriend(
 		]) ||
 		fallbackDescription;
 	const detectedAvatar =
-		cleanText(source.avatar) ||
-		getIconFromHtml(page.html, page.finalUrl) ||
-		fallbackAvatar;
+		getIconFromHtml(page.html, page.finalUrl) || fallbackAvatar;
 
 	return {
 		name: detectedName || fallbackName,

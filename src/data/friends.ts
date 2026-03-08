@@ -1,11 +1,11 @@
 export type FriendSource = {
 	url: string;
 	name?: string;
-	description?: string;
-	avatar?: string;
 };
 
-// Add new friend links here. By default, name/description/avatar are auto-detected from each site.
+// Add new friend links here.
+// `name` is optional. If set, it overrides the detected site name.
+// Description and icon remain auto-detected.
 export const friendSources: FriendSource[] = [
 	{
 		url: "https://cloudflare.com",
@@ -13,4 +13,8 @@ export const friendSources: FriendSource[] = [
 	{
 		url: "https://github.com",
 	},
+	// {
+	// 	url: "https://example.com",
+	// 	name: "My Custom Friend Name",
+	// },
 ];
