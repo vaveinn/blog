@@ -1,0 +1,143 @@
+---
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { Icon } from "astro-icon/components";
+import demoAvatar from "../assets/images/demo-avatar.png";
+import friendBackground from "../assets/images/demo-banner.png";
+
+type FriendLink = {
+	name: string;
+	description: string;
+	url: string;
+	avatar: string;
+};
+
+const friendLinks: FriendLink[] = [
+	{
+		name: "示例友链 A",
+		description: "这里填写你朋友站点的介绍。",
+		url: "https://example.com",
+		avatar: demoAvatar.src,
+	},
+	{
+		name: "示例友链 B",
+		description: "支持添加任意外链站点。",
+		url: "https://example.org",
+		avatar: demoAvatar.src,
+	},
+	{
+		name: "示例友链 C",
+		description: "点击卡片可直接跳转。",
+		url: "https://example.net",
+		avatar: demoAvatar.src,
+	},
+	{
+		name: "示例友链 D",
+		description: "卡片背景使用毛玻璃效果。",
+		url: "https://example.edu",
+		avatar: demoAvatar.src,
+	},
+];
+---
+
+<MainGridLayout title="友链" description="我的友链页面">
+	<section class="friend-wall relative rounded-[var(--radius-large)] overflow-hidden">
+		<img
+			src={friendBackground.src}
+			alt="友链页面背景图"
+			class="absolute inset-0 h-full w-full object-cover friend-bg"
+			loading="eager"
+		/>
+		<div class="absolute inset-0 friend-mask"></div>
+
+		<div class="relative z-10 px-6 py-7 md:px-10 md:py-9">
+			<header class="mb-6 md:mb-8">
+				<h1 class="flex items-center gap-3 text-white text-3xl md:text-4xl font-bold mb-4">
+					<span class="friend-title-icon">
+						<Icon name="material-symbols:group-rounded" class="text-[1.8rem] text-black/80" />
+					</span>
+					友链
+				</h1>
+				<p class="text-white/85 text-base md:text-lg leading-8">
+					点击任意友链卡片即可跳转，整体背景采用图片叠加毛玻璃效果。
+				</p>
+			</header>
+
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+				{
+					friendLinks.map((friend) => (
+						<a
+							href={friend.url}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="friend-card group rounded-2xl p-5 md:p-6 min-h-32"
+						>
+							<div class="flex items-start gap-4">
+								<img
+									src={friend.avatar}
+									alt={`${friend.name} 的头像`}
+									class="h-12 w-12 rounded-xl object-cover border border-white/30"
+									loading="lazy"
+								/>
+								<div class="min-w-0 flex-1">
+									<h2 class="text-white font-bold text-2xl mb-1 truncate">{friend.name}</h2>
+									<p class="text-white/80 text-base leading-7 mb-2">{friend.description}</p>
+									<p class="text-white/70 text-sm truncate">{friend.url}</p>
+								</div>
+								<Icon
+									name="fa6-solid:arrow-up-right-from-square"
+									class="text-white/55 group-hover:text-white/90 mt-1 transition"
+								/>
+							</div>
+						</a>
+					))
+				}
+			</div>
+		</div>
+	</section>
+</MainGridLayout>
+
+<style>
+	.friend-wall {
+		min-height: 32rem;
+	}
+
+	.friend-bg {
+		transform: scale(1.08);
+		filter: blur(2px) saturate(1.05);
+	}
+
+	.friend-mask {
+		background:
+			radial-gradient(ellipse at top left, rgba(255, 161, 204, 0.3), transparent 45%),
+			linear-gradient(135deg, rgba(18, 22, 28, 0.68), rgba(12, 14, 18, 0.78));
+		backdrop-filter: blur(8px);
+	}
+
+	.friend-title-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		height: 3rem;
+		width: 3rem;
+		border-radius: 0.75rem;
+		background: rgba(248, 140, 185, 0.95);
+		box-shadow: 0 8px 20px rgba(244, 114, 182, 0.35);
+	}
+
+	.friend-card {
+		background: rgba(15, 18, 24, 0.38);
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		backdrop-filter: blur(14px) saturate(1.1);
+		-webkit-backdrop-filter: blur(14px) saturate(1.1);
+		transition:
+			transform 180ms ease,
+			border-color 180ms ease,
+			background-color 180ms ease;
+	}
+
+	.friend-card:hover {
+		transform: translateY(-2px);
+		border-color: rgba(255, 255, 255, 0.34);
+		background: rgba(15, 18, 24, 0.5);
+	}
+</style>
