@@ -8,7 +8,7 @@ export type FriendSource = {
 // Add new friend links here. By default, name/description/avatar are auto-detected from each site.
 export const friendSources: FriendSource[] = [
 	{
-		url: "https://ccloudflare.com",
+		url: "https://cloudflare.com",
 	},
 	{
 		url: "https://github.com",
