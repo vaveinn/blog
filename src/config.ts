@@ -45,11 +45,11 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.Home,
 		LinkPreset.Archive,
 		{
-			name: "友链",
+			name: "\u53cb\u94fe",
 			url: "/friends/",
 		},
 		{
-			name: "赞助",
+			name: "\u8d5e\u52a9",
 			url: "/sponsor/",
 		},
 		{
@@ -57,9 +57,8 @@ export const navBarConfig: NavBarConfig = {
 			url: "/sub-converter/",
 		},
 		{
-			name: "GitHub",
-			url: "https://github.com/accoreo", // Internal links should not include the base path, as it is automatically added
-			external: true, // Show an external link icon and will open in a new tab
+			name: "\u52A8\u6001",
+			url: "/moments/",
 		},
 	],
 };
@@ -67,7 +66,7 @@ export const navBarConfig: NavBarConfig = {
 export const profileConfig: ProfileConfig = {
 	avatar: "assets/images/demo-avatar.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "Lucas", // Display name of the author
-	bio: "电气工程专业学生，业余时间喜欢编程和写博客。", // A short bio or description of the author
+	bio: "\u7535\u6c14\u5de5\u7a0b\u4e13\u4e1a\u5b66\u751f\uff0c\u4e1a\u4f59\u65f6\u95f4\u559c\u6b22\u7f16\u7a0b\u548c\u5199\u535a\u5ba2\u3002", // A short bio or description of the author
 	links: [
 		{
 			name: "Telegram",
@@ -75,7 +74,7 @@ export const profileConfig: ProfileConfig = {
 			url: "https://t.me/auepyc",
 		},
 		{
-			name: "邮箱",
+			name: "\u90ae\u7bb1",
 			icon: "fa6-solid:envelope",
 			url: "mailto:vaveinn@outlook.com",
 		},
@@ -114,3 +113,4 @@ export const expressiveCodeConfig: ExpressiveCodeConfig = {
 	// Please select a dark theme, as this blog theme currently only supports dark background color
 	theme: "github-dark",
 };
+

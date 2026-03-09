@@ -24,9 +24,23 @@ import { remarkExcerpt } from "./src/plugins/remark-excerpt.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
 
+function resolveSiteUrl() {
+	const rawSite =
+		process.env.SITE_URL ||
+		process.env.SITE ||
+		process.env.URL ||
+		process.env.VERCEL_PROJECT_PRODUCTION_URL ||
+		process.env.VERCEL_URL ||
+		"https://fuwari.vercel.app/";
+	const withProtocol = /^https?:\/\//i.test(rawSite)
+		? rawSite
+		: `https://${rawSite}`;
+	return withProtocol.endsWith("/") ? withProtocol : `${withProtocol}/`;
+}
+
 // https://astro.build/config
 export default defineConfig({
-	site: "https://fuwari.vercel.app/",
+	site: resolveSiteUrl(),
 	base: "/",
 	trailingSlash: "always",
 	integrations: [

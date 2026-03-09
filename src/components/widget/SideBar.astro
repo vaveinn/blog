@@ -1,5 +1,7 @@
 ---
 import type { MarkdownHeading } from "astro";
+import { pathsEqual, url } from "@utils/url-utils";
+import ArticleOutline from "./ArticleOutline.astro";
 import BlogStats from "./BlogStats.astro";
 import Categories from "./Categories.astro";
 import Profile from "./Profile.astro";
@@ -11,14 +13,28 @@ interface Props {
 }
 
 const className = Astro.props.class;
+const headings = Astro.props.headings || [];
+const isMomentDetailRoute =
+	Astro.url.pathname.startsWith(url("/moments/")) &&
+	!pathsEqual(Astro.url.pathname, url("/moments/"));
+const isReadingRoute =
+	Astro.url.pathname.startsWith(url("/posts/")) || isMomentDetailRoute;
 ---
 <div id="sidebar" class:list={[className, "w-full"]}>
-    <div class="flex flex-col w-full gap-4 mb-4">
-        <Profile></Profile>
-        <BlogStats></BlogStats>
-    </div>
-    <div id="sidebar-sticky" class="transition-all duration-700 flex flex-col w-full gap-4 top-4 sticky top-4">
-        <Categories class="onload-animation" style="animation-delay: 150ms"></Categories>
-        <Tag class="onload-animation" style="animation-delay: 200ms"></Tag>
-    </div>
+    {isReadingRoute ? (
+        <div id="sidebar-sticky" class="transition-all duration-700 flex flex-col w-full gap-4 top-4 sticky top-4">
+            <ArticleOutline headings={headings} class="onload-animation" style="animation-delay: 100ms"></ArticleOutline>
+        </div>
+    ) : (
+        <>
+            <div class="flex flex-col w-full gap-4 mb-4">
+                <Profile></Profile>
+                <BlogStats></BlogStats>
+            </div>
+            <div id="sidebar-sticky" class="transition-all duration-700 flex flex-col w-full gap-4 top-4 sticky top-4">
+                <Categories class="onload-animation" style="animation-delay: 150ms"></Categories>
+                <Tag class="onload-animation" style="animation-delay: 200ms"></Tag>
+            </div>
+        </>
+    )}
 </div>

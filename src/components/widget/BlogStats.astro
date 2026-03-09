@@ -7,6 +7,7 @@ import WidgetLayout from "./WidgetLayout.astro";
 const posts = await getCollection("posts", ({ data }) =>
 	import.meta.env.PROD ? data.draft !== true : true,
 );
+const normalPosts = posts.filter((entry) => !entry.id.startsWith("moments/"));
 
 function stripMarkdown(markdown: string): string {
 	return markdown
@@ -30,8 +31,11 @@ function countPostWords(markdown: string): number {
 	return cjkChars.length + latinWords.length;
 }
 
-const postCount = posts.length;
-const totalWords = posts.reduce((sum, post) => sum + countPostWords(post.body), 0);
+const postCount = normalPosts.length;
+const totalWords = normalPosts.reduce(
+	(sum, post) => sum + countPostWords(post.body),
+	0,
+);
 
 function buildCounterNamespace(title: string): string {
 	const slug = title
@@ -45,7 +49,12 @@ const counterNamespace = buildCounterNamespace(siteConfig.title);
 const counterKey = "site-visits";
 ---
 
-<WidgetLayout id="blog-stats" name="站点数据" class="onload-animation" style="animation-delay: 120ms">
+<WidgetLayout
+	id="blog-stats"
+	name="\u7ad9\u70b9\u6570\u636e"
+	class="onload-animation"
+	style="animation-delay: 120ms"
+>
 	<div
 		id="blog-stats-data"
 		class="stats-list"
@@ -55,7 +64,7 @@ const counterKey = "site-visits";
 		<div class="stats-item">
 			<div class="stats-label">
 				<Icon name="fa6-solid:file-lines" class="stats-icon" />
-				文章数量
+				{"\u6587\u7ae0\u6570\u91cf"}
 			</div>
 			<div class="stats-value">{postCount.toLocaleString("zh-CN")}</div>
 		</div>
@@ -63,7 +72,7 @@ const counterKey = "site-visits";
 		<div class="stats-item">
 			<div class="stats-label">
 				<Icon name="fa6-solid:font" class="stats-icon" />
-				总字数
+				{"\u603b\u5b57\u6570"}
 			</div>
 			<div class="stats-value">{totalWords.toLocaleString("zh-CN")}</div>
 		</div>
@@ -71,7 +80,7 @@ const counterKey = "site-visits";
 		<div class="stats-item">
 			<div class="stats-label">
 				<Icon name="fa6-solid:chart-column" class="stats-icon" />
-				网站访问量
+				{"\u7f51\u7ad9\u8bbf\u95ee\u91cf"}
 			</div>
 			<div id="site-visit-count" class="stats-value">Loading...</div>
 		</div>
@@ -79,7 +88,7 @@ const counterKey = "site-visits";
 		<div class="stats-item">
 			<div class="stats-label">
 				<Icon name="fa6-solid:globe" class="stats-icon" />
-				当前 IP
+				{"\u5f53\u524d IP"}
 			</div>
 			<div id="site-visitor-ip" class="stats-value">Loading...</div>
 		</div>

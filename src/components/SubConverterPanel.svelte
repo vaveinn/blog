@@ -44,36 +44,36 @@ const PRESET_RULES: Record<Exclude<PresetName, "custom">, string[]> = {
 };
 
 const RULE_LABELS: Record<string, string> = {
-	"Ad Block": "广告拦截",
-	"AI Services": "AI 服务",
-	Bilibili: "哔哩哔哩",
+	"Ad Block": "\u5e7f\u544a\u62e6\u622a",
+	"AI Services": "AI \u670d\u52a1",
+	Bilibili: "\u54d4\u54e9\u54d4\u54e9",
 	Youtube: "YouTube",
-	Google: "Google 服务",
-	Private: "私有网络",
-	"Location:CN": "国内流量",
+	Google: "Google \u670d\u52a1",
+	Private: "\u79c1\u6709\u7f51\u7edc",
+	"Location:CN": "\u56fd\u5185\u6d41\u91cf",
 	Telegram: "Telegram",
 	Github: "GitHub",
 	Microsoft: "Microsoft",
 	Apple: "Apple",
-	"Social Media": "社交媒体",
-	Streaming: "流媒体",
-	Gaming: "游戏平台",
-	Education: "教育资源",
-	Financial: "金融服务",
-	"Cloud Services": "云服务",
-	"Non-China": "非中国流量",
+	"Social Media": "\u793e\u4ea4\u5a92\u4f53",
+	Streaming: "\u6d41\u5a92\u4f53",
+	Gaming: "\u6e38\u620f\u5e73\u53f0",
+	Education: "\u6559\u80b2\u8d44\u6e90",
+	Financial: "\u91d1\u878d\u670d\u52a1",
+	"Cloud Services": "\u4e91\u670d\u52a1",
+	"Non-China": "\u975e\u4e2d\u56fd\u6d41\u91cf",
 };
 
 const LINK_ITEMS: Array<{ key: LinkKey; label: string }> = [
-	{ key: "xray", label: "Xray（Base64）" },
+	{ key: "xray", label: "Xray (Base64)" },
 	{ key: "singbox", label: "Sing-box" },
 	{ key: "clash", label: "Clash" },
 	{ key: "surge", label: "Surge" },
-	{ key: "subconverter", label: "Subconverter 配置链接" },
+	{ key: "subconverter", label: "Subconverter \u914d\u7f6e\u94fe\u63a5" },
 ];
 
 const CUSTOM_RULES_PLACEHOLDER =
-	'[{"name":"自定义分组","site_rules":["example"],"ip_rules":[]}]';
+	'[{"name":"\u81ea\u5b9a\u4e49\u5206\u7ec4","site_rules":["example"],"ip_rules":[]}]';
 
 const STORAGE_KEYS = {
 	endpoint: "subconv:endpoint",
@@ -119,7 +119,7 @@ function isPresetName(value: string | null): value is PresetName {
 function normalizeEndpoint(rawValue: string): string {
 	const trimmed = rawValue.trim();
 	if (!trimmed) {
-		throw new Error("请填写 Worker 地址。");
+		throw new Error("\u8bf7\u586b\u5199 Worker \u5730\u5740\u3002");
 	}
 
 	const withProtocol = /^https?:\/\//i.test(trimmed)
@@ -128,7 +128,9 @@ function normalizeEndpoint(rawValue: string): string {
 	const parsed = new URL(withProtocol);
 
 	if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
-		throw new Error("Worker 地址必须使用 http 或 https 协议。");
+		throw new Error(
+			"Worker \u5730\u5740\u5fc5\u987b\u4f7f\u7528 http \u6216 https \u534f\u8bae\u3002",
+		);
 	}
 
 	const path = parsed.pathname === "/" ? "" : parsed.pathname.replace(/\/+$/, "");
@@ -143,7 +145,9 @@ function parseCustomRules(): unknown[] {
 
 	const parsed = JSON.parse(raw);
 	if (!Array.isArray(parsed)) {
-		throw new Error("自定义规则必须是 JSON 数组。");
+		throw new Error(
+			"\u81ea\u5b9a\u4e49\u89c4\u5219\u5fc5\u987b\u662f JSON \u6570\u7ec4\u3002",
+		);
 	}
 
 	return parsed;
@@ -176,7 +180,7 @@ function createParams(includeConfig: boolean): URLSearchParams {
 	if (includeConfig) {
 		const trimmedInput = input.trim();
 		if (!trimmedInput) {
-			throw new Error("请输入输入源内容。");
+			throw new Error("\u8bf7\u8f93\u5165\u8f93\u5165\u6e90\u5185\u5bb9\u3002");
 		}
 
 		params.set("config", trimmedInput);
@@ -232,7 +236,9 @@ function generateLinks(): void {
 	} catch (error) {
 		generatedLinks = null;
 		errorMessage =
-			error instanceof Error ? error.message : "生成链接失败。";
+			error instanceof Error
+				? error.message
+				: "\u751f\u6210\u94fe\u63a5\u5931\u8d25\u3002";
 	}
 }
 
@@ -284,7 +290,7 @@ function fallbackCopy(text: string): void {
 	const copied = document.execCommand("copy");
 	document.body.removeChild(textarea);
 	if (!copied) {
-		throw new Error("复制失败。");
+		throw new Error("\u590d\u5236\u5931\u8d25\u3002");
 	}
 }
 
@@ -312,7 +318,8 @@ async function copyLink(key: LinkKey): Promise<void> {
 			copiedKey = null;
 		}, 1600);
 	} catch (error) {
-		errorMessage = error instanceof Error ? error.message : "复制失败。";
+		errorMessage =
+			error instanceof Error ? error.message : "\u590d\u5236\u5931\u8d25\u3002";
 	}
 }
 
@@ -387,17 +394,24 @@ $: if (hydrated) {
 <section class="card-base subconverter-wrap p-6 md:p-8">
 	<div class="mb-6">
 		<h1 class="panel-title">
-			<Icon icon="material-symbols:sync-rounded" class="text-[1.75rem] text-[var(--primary)]" />
-			订阅转换
+			<Icon
+				icon="material-symbols:sync-rounded"
+				class="text-[1.75rem] text-[var(--primary)]"
+			/>
+			{"\u8ba2\u9605\u8f6c\u6362"}
 		</h1>
 		<p class="panel-subtitle">
-			基于 sublink-worker 的核心流程，Worker 地址可以默认。
+			{
+				"\u57fa\u4e8e sublink-worker \u7684\u6838\u5fc3\u6d41\u7a0b\uff0cWorker \u5730\u5740\u53ef\u4ee5\u9ed8\u8ba4\u3002"
+			}
 		</p>
 	</div>
 
 	<div class="stack">
 		<div>
-			<label class="field-label" for="sub-worker-endpoint">Worker 地址</label>
+			<label class="field-label" for="sub-worker-endpoint">
+				{"Worker \u5730\u5740"}
+			</label>
 			<input
 				id="sub-worker-endpoint"
 				class="field-input"
@@ -406,39 +420,47 @@ $: if (hydrated) {
 				placeholder="https://app.sublink.works"
 			/>
 			<p class="field-help">
-				可填写你自己部署的 sublink-worker 域名。
+				{"\u53ef\u586b\u5199\u4f60\u81ea\u5df1\u90e8\u7f72\u7684 sublink-worker \u57df\u540d\u3002"}
 			</p>
 		</div>
 
 		<div>
-			<label class="field-label" for="sub-input">输入源</label>
+			<label class="field-label" for="sub-input">
+				{"\u8f93\u5165\u6e90"}
+			</label>
 			<textarea
 				id="sub-input"
 				class="field-textarea"
 				rows={6}
 				bind:value={input}
-				placeholder="粘贴订阅链接、Clash YAML、Sing-box JSON 或 Surge 配置。"
+				placeholder={
+					"\u7c98\u8d34\u8ba2\u9605\u94fe\u63a5\u3001Clash YAML\u3001Sing-box JSON \u6216 Surge \u914d\u7f6e\u3002"
+				}
 			></textarea>
 		</div>
 
 		<div class="grid gap-4 md:grid-cols-2">
 			<div>
-				<label class="field-label" for="rule-preset">规则预设</label>
+				<label class="field-label" for="rule-preset">
+					{"\u89c4\u5219\u9884\u8bbe"}
+				</label>
 				<select
 					id="rule-preset"
 					class="field-select"
 					value={selectedPreset}
 					on:change={onPresetChange}
 				>
-					<option value="minimal">最小化</option>
-					<option value="balanced">均衡</option>
-					<option value="comprehensive">全面</option>
-					<option value="custom">自定义</option>
+					<option value="minimal">{"\u6700\u5c0f\u5316"}</option>
+					<option value="balanced">{"\u5747\u8861"}</option>
+					<option value="comprehensive">{"\u5168\u9762"}</option>
+					<option value="custom">{"\u81ea\u5b9a\u4e49"}</option>
 				</select>
 			</div>
 
 			<div>
-				<label class="field-label" for="user-agent">自定义 User-Agent（可选）</label>
+				<label class="field-label" for="user-agent">
+					{"\u81ea\u5b9a\u4e49 User-Agent\uff08\u53ef\u9009\uff09"}
+				</label>
 				<input
 					id="user-agent"
 					class="field-input"
@@ -450,7 +472,7 @@ $: if (hydrated) {
 		</div>
 
 		<div>
-			<div class="field-label">规则集合</div>
+			<div class="field-label">{"\u89c4\u5219\u96c6\u5408"}</div>
 			<div class="rule-grid">
 				{#each ALL_RULES as rule}
 					<button
@@ -468,22 +490,24 @@ $: if (hydrated) {
 		<div class="grid gap-3 md:grid-cols-2">
 			<label class="option-item">
 				<input type="checkbox" bind:checked={groupByCountry} />
-				<span>按国家分组</span>
+				<span>{"\u6309\u56fd\u5bb6\u5206\u7ec4"}</span>
 			</label>
 			<label class="option-item">
 				<input type="checkbox" bind:checked={includeAutoSelect} />
-				<span>包含自动选择</span>
+				<span>{"\u5305\u542b\u81ea\u52a8\u9009\u62e9"}</span>
 			</label>
 			<label class="option-item">
 				<input type="checkbox" bind:checked={enableClashUI} />
-				<span>启用 Clash UI</span>
+				<span>{"\u542f\u7528 Clash UI"}</span>
 			</label>
 		</div>
 
 		{#if enableClashUI}
 			<div class="grid gap-4 md:grid-cols-2">
 				<div>
-					<label class="field-label" for="external-controller">外部控制器</label>
+					<label class="field-label" for="external-controller">
+						{"\u5916\u90e8\u63a7\u5236\u5668"}
+					</label>
 					<input
 						id="external-controller"
 						class="field-input"
@@ -493,7 +517,9 @@ $: if (hydrated) {
 					/>
 				</div>
 				<div>
-					<label class="field-label" for="external-ui-url">外部 UI 下载地址</label>
+					<label class="field-label" for="external-ui-url">
+						{"\u5916\u90e8 UI \u4e0b\u8f7d\u5730\u5740"}
+					</label>
 					<input
 						id="external-ui-url"
 						class="field-input"
@@ -506,7 +532,9 @@ $: if (hydrated) {
 		{/if}
 
 		<div>
-			<label class="field-label" for="custom-rules">自定义规则 JSON（可选）</label>
+			<label class="field-label" for="custom-rules">
+				{"\u81ea\u5b9a\u4e49\u89c4\u5219 JSON\uff08\u53ef\u9009\uff09"}
+			</label>
 			<textarea
 				id="custom-rules"
 				class="field-textarea field-textarea-mono"
@@ -519,10 +547,10 @@ $: if (hydrated) {
 		<div class="action-row">
 			<button class="btn-regular action-btn" type="button" on:click={generateLinks}>
 				<Icon icon="material-symbols:bolt-rounded" class="mr-2 text-[1.1rem]" />
-				生成链接
+				{"\u751f\u6210\u94fe\u63a5"}
 			</button>
 			<button class="btn-plain action-btn-secondary" type="button" on:click={clearForm}>
-				清空
+				{"\u6e05\u7a7a"}
 			</button>
 		</div>
 
@@ -534,7 +562,7 @@ $: if (hydrated) {
 
 {#if generatedLinks}
 	<section class="card-base result-wrap p-6 md:p-8 mt-4">
-		<h2 class="result-title">转换结果</h2>
+		<h2 class="result-title">{"\u8f6c\u6362\u7ed3\u679c"}</h2>
 		<div class="result-list">
 			{#each LINK_ITEMS as item}
 				<div class="result-item">
@@ -546,7 +574,7 @@ $: if (hydrated) {
 							class="btn-regular copy-btn"
 							on:click={() => copyLink(item.key)}
 						>
-							{copiedKey === item.key ? "已复制" : "复制"}
+							{copiedKey === item.key ? "\u5df2\u590d\u5236" : "\u590d\u5236"}
 						</button>
 					</div>
 				</div>

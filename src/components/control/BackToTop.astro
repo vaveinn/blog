@@ -4,7 +4,12 @@ import { Icon } from "astro-icon/components";
 
 <!-- There can't be a filter on parent element, or it will break `fixed` -->
 <div class="back-to-top-wrapper hidden lg:block">
-    <div id="back-to-top-btn" class="back-to-top-btn hide flex items-center rounded-2xl overflow-hidden transition" onclick="backToTop()">
+    <div id="back-to-bottom-btn" class="back-shortcut-btn back-bottom-btn hide flex items-center rounded-2xl overflow-hidden transition" onclick="backToBottom()">
+        <button aria-label="Back to Bottom" class="btn-card h-[3.75rem] w-[3.75rem]">
+            <Icon name="material-symbols:keyboard-arrow-down-rounded" class="mx-auto"></Icon>
+        </button>
+    </div>
+    <div id="back-to-top-btn" class="back-shortcut-btn back-top-btn hide flex items-center rounded-2xl overflow-hidden transition" onclick="backToTop()">
         <button aria-label="Back to Top" class="btn-card h-[3.75rem] w-[3.75rem]">
             <Icon name="material-symbols:keyboard-arrow-up-rounded" class="mx-auto"></Icon>
         </button>
@@ -14,13 +19,13 @@ import { Icon } from "astro-icon/components";
 <style lang="stylus">
 .back-to-top-wrapper
     width: 3.75rem
-    height: 3.75rem
+    height: 8.5rem
     position: absolute
     right: 0
     top: 0
     pointer-events: none
 
-.back-to-top-btn
+.back-shortcut-btn
     color: var(--primary)
     font-size: 2.25rem
     font-weight: bold
@@ -40,10 +45,20 @@ import { Icon } from "astro-icon/components";
     &:active
       transform: translateX(5rem) scale(0.9)
 
+.back-top-btn
+    bottom: 10rem
+
+.back-bottom-btn
+    bottom: 5.5rem
+
 </style>
 
 <script is:raw is:inline>
 function backToTop() {
     window.scroll({ top: 0, behavior: 'smooth' });
+}
+
+function backToBottom() {
+    window.scroll({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
 }
 </script>

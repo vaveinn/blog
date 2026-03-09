@@ -1,0 +1,35 @@
+---
+import MomentCard from "@components/MomentCard.astro";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getMomentUrlBySlug } from "@utils/url-utils";
+import { getMomentSlug, getSortedMoments } from "@utils/moment-utils";
+
+const moments = await getSortedMoments();
+let delay = 0;
+const interval = 50;
+---
+
+<MainGridLayout
+	title="\u52a8\u6001"
+	description="\u65e5\u5e38\u66f4\u65b0\u3001\u77ed\u5185\u5bb9\u4e0e\u788e\u7247\u8bb0\u5f55"
+>
+	<section class="flex flex-col gap-4">
+		{
+			moments.length > 0 ? (
+				moments.map((entry) => (
+					<MomentCard
+						entry={entry}
+						url={getMomentUrlBySlug(getMomentSlug(entry))}
+						style={`animation-delay: calc(var(--content-delay) + ${delay++ * interval}ms);`}
+					/>
+				))
+			) : (
+				<div class="card-base p-8 text-center text-75 border border-[var(--line-color)] onload-animation">
+					{"\u6682\u65f6\u8fd8\u6ca1\u6709\u52a8\u6001\u5185\u5bb9\uff0c\u4f60\u53ef\u4ee5\u5728 "}
+					<code>src/content/posts/moments</code>
+					{" \u4e2d\u65b0\u589e Markdown \u6587\u4ef6\u6765\u53d1\u5e03\u52a8\u6001\u3002"}
+				</div>
+			)
+		}
+	</section>
+</MainGridLayout>

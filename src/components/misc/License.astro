@@ -4,6 +4,7 @@ import { licenseConfig, profileConfig } from "../../config";
 import I18nKey from "../../i18n/i18nKey";
 import { i18n } from "../../i18n/translation";
 import { formatDateToYYYYMMDD } from "../../utils/date-utils";
+import { getPostUrlBySlug } from "../../utils/url-utils";
 
 interface Props {
 	title: string;
@@ -12,17 +13,18 @@ interface Props {
 	class: string;
 }
 
-const { title, pubDate } = Astro.props;
+const { title, pubDate, slug } = Astro.props;
 const className = Astro.props.class;
 const profileConf = profileConfig;
 const licenseConf = licenseConfig;
-const postUrl = decodeURIComponent(Astro.url.toString());
+const postPath = getPostUrlBySlug(slug);
+const postUrl = decodeURIComponent(postPath);
 ---
 <div class={`relative transition overflow-hidden bg-[var(--license-block-bg)] py-5 px-6 ${className}`}>
     <div class="transition font-bold text-black/75 dark:text-white/75">
         {title}
     </div>
-    <a href={postUrl} class="link text-[var(--primary)]">
+    <a id="post-license-url" data-post-path={postPath} href={postPath} class="link text-[var(--primary)]">
         {postUrl}
     </a>
     <div class="flex gap-6 mt-2">
@@ -41,3 +43,16 @@ const postUrl = decodeURIComponent(Astro.url.toString());
     </div>
     <Icon name="fa6-brands:creative-commons" class="transition text-[15rem] absolute pointer-events-none right-6 top-1/2 -translate-y-1/2 text-black/5 dark:text-white/5"></Icon>
 </div>
+
+<script is:inline>
+(() => {
+	const postLink = document.getElementById("post-license-url");
+	if (!(postLink instanceof HTMLAnchorElement)) return;
+	const postPath = postLink.getAttribute("data-post-path");
+	if (!postPath) return;
+
+	const fullUrl = `${window.location.origin}${postPath}`;
+	postLink.href = fullUrl;
+	postLink.textContent = decodeURIComponent(fullUrl);
+})();
+</script>

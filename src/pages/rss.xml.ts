@@ -8,6 +8,17 @@ import { siteConfig } from "@/config";
 
 const parser = new MarkdownIt();
 
+function resolveSiteUrl() {
+	const rawSite =
+		process.env.SITE_URL ||
+		process.env.SITE ||
+		process.env.URL ||
+		process.env.VERCEL_PROJECT_PRODUCTION_URL ||
+		process.env.VERCEL_URL ||
+		"https://fuwari.vercel.app";
+	return /^https?:\/\//i.test(rawSite) ? rawSite : `https://${rawSite}`;
+}
+
 function stripInvalidXmlChars(str: string): string {
 	return str.replace(
 		// biome-ignore lint/suspicious/noControlCharactersInRegex: https://www.w3.org/TR/xml/#charsets
@@ -22,7 +33,7 @@ export async function GET(context: APIContext) {
 	return rss({
 		title: siteConfig.title,
 		description: siteConfig.subtitle || "No description",
-		site: context.site ?? "https://fuwari.vercel.app",
+		site: context.site ?? resolveSiteUrl(),
 		items: blog.map((post) => {
 			const content =
 				typeof post.body === "string" ? post.body : String(post.body || "");

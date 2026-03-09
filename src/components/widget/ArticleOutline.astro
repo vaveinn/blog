@@ -1,0 +1,176 @@
+---
+import type { MarkdownHeading } from "astro";
+import WidgetLayout from "./WidgetLayout.astro";
+
+interface Props {
+	headings?: MarkdownHeading[];
+	class?: string;
+	style?: string;
+}
+
+const headings = Astro.props.headings || [];
+const className = Astro.props.class;
+const style = Astro.props.style;
+
+let minDepth = Number.POSITIVE_INFINITY;
+for (const heading of headings) {
+	minDepth = Math.min(minDepth, heading.depth);
+}
+if (!Number.isFinite(minDepth)) {
+	minDepth = 1;
+}
+
+const displayHeadings = headings.filter((heading) => heading.depth <= minDepth + 2);
+---
+
+<WidgetLayout
+	id="article-outline-widget"
+	name="\u6587\u7ae0\u7ed3\u6784"
+	class={className}
+	style={style}
+>
+	{
+		displayHeadings.length > 0 ? (
+			<article-outline>
+				<ul class="outline-list">
+					{displayHeadings.map((heading) => (
+						<li>
+							<a
+								href={`#${heading.slug}`}
+								class:list={[
+									"outline-link",
+									{
+										"outline-depth-1": heading.depth === minDepth,
+										"outline-depth-2": heading.depth === minDepth + 1,
+										"outline-depth-3": heading.depth >= minDepth + 2,
+									},
+								]}
+							>
+								{heading.text}
+							</a>
+						</li>
+					))}
+				</ul>
+			</article-outline>
+		) : (
+			<div class="text-50 text-sm pb-2">
+				{"\u5f53\u524d\u9875\u9762\u6682\u65e0\u53ef\u663e\u793a\u7684\u6587\u7ae0\u7ed3\u6784\u3002"}
+			</div>
+		)
+	}
+</WidgetLayout>
+
+<style>
+	.outline-list {
+		display: grid;
+		gap: 0.25rem;
+		padding-bottom: 0.5rem;
+	}
+
+	.outline-link {
+		display: block;
+		padding: 0.45rem 0.55rem;
+		border-radius: 0.65rem;
+		line-height: 1.45;
+		color: rgb(0 0 0 / 0.72);
+		transition: all 0.15s ease;
+	}
+
+	.outline-link:hover {
+		background: var(--btn-plain-bg-hover);
+		color: var(--primary);
+	}
+
+	.outline-link.active {
+		background: var(--btn-plain-bg-hover);
+		color: var(--primary);
+		font-weight: 600;
+	}
+
+	.outline-depth-1 {
+		font-size: 0.9rem;
+	}
+
+	.outline-depth-2 {
+		font-size: 0.85rem;
+		padding-left: 1.1rem;
+	}
+
+	.outline-depth-3 {
+		font-size: 0.8rem;
+		padding-left: 1.6rem;
+		opacity: 0.9;
+	}
+
+	:global(.dark) .outline-link {
+		color: rgb(255 255 255 / 0.74);
+	}
+</style>
+
+<script>
+class ArticleOutline extends HTMLElement {
+	observer: IntersectionObserver | null = null;
+
+	connectedCallback() {
+		const links = Array.from(
+			this.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'),
+		);
+		if (links.length === 0) return;
+
+		const offset = 96;
+
+		links.forEach((link) => {
+			link.addEventListener("click", (event) => {
+				event.preventDefault();
+				const id = decodeURIComponent(link.hash.slice(1));
+				const target = document.getElementById(id);
+				if (!target) return;
+
+				const top = target.getBoundingClientRect().top + window.scrollY - offset;
+				window.scrollTo({ top, behavior: "smooth" });
+				history.replaceState(null, "", `#${id}`);
+			});
+		});
+
+		const targets = links
+			.map((link) => {
+				const id = decodeURIComponent(link.hash.slice(1));
+				return { link, target: document.getElementById(id) };
+			})
+			.filter((item): item is { link: HTMLAnchorElement; target: HTMLElement } =>
+				Boolean(item.target),
+			);
+
+		if (targets.length === 0) return;
+
+		this.observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					const current = targets.find((item) => item.target === entry.target);
+					if (!current) continue;
+					if (entry.isIntersecting) {
+						links.forEach((link) => link.classList.remove("active"));
+						current.link.classList.add("active");
+					}
+				}
+			},
+			{
+				root: null,
+				rootMargin: "-40% 0px -50% 0px",
+				threshold: 0,
+			},
+		);
+
+		targets.forEach((item) => this.observer?.observe(item.target));
+	}
+
+	disconnectedCallback() {
+		this.observer?.disconnect();
+		this.observer = null;
+	}
+}
+
+if (!customElements.get("article-outline")) {
+	customElements.define("article-outline", ArticleOutline);
+}
+</script>
