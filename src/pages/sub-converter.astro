@@ -1,0 +1,12 @@
+---
+import SubConverterPanel from "@components/SubConverterPanel.svelte";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+
+const pageTitle = "\u8BA2\u9605\u8F6C\u6362";
+const pageDescription =
+	"Embedded subscription conversion tool based on sublink-worker, styled for this blog.";
+---
+
+<MainGridLayout title={pageTitle} description={pageDescription}>
+	<SubConverterPanel client:only="svelte" />
+</MainGridLayout>

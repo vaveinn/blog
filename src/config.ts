@@ -53,6 +53,10 @@ export const navBarConfig: NavBarConfig = {
 			url: "/sponsor/",
 		},
 		{
+			name: "\u8BA2\u9605\u8F6C\u6362",
+			url: "/sub-converter/",
+		},
+		{
 			name: "GitHub",
 			url: "https://github.com/accoreo", // Internal links should not include the base path, as it is automatically added
 			external: true, // Show an external link icon and will open in a new tab
