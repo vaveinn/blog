@@ -391,7 +391,7 @@ $: if (hydrated) {
 			订阅转换
 		</h1>
 		<p class="panel-subtitle">
-			基于 sublink-worker 的核心流程，已内嵌到博客并适配当前主题样式。
+			基于 sublink-worker 的核心流程，Worker 地址可以默认。
 		</p>
 	</div>
 
