@@ -43,16 +43,37 @@ const PRESET_RULES: Record<Exclude<PresetName, "custom">, string[]> = {
 	comprehensive: [...ALL_RULES],
 };
 
+const RULE_LABELS: Record<string, string> = {
+	"Ad Block": "广告拦截",
+	"AI Services": "AI 服务",
+	Bilibili: "哔哩哔哩",
+	Youtube: "YouTube",
+	Google: "Google 服务",
+	Private: "私有网络",
+	"Location:CN": "国内流量",
+	Telegram: "Telegram",
+	Github: "GitHub",
+	Microsoft: "Microsoft",
+	Apple: "Apple",
+	"Social Media": "社交媒体",
+	Streaming: "流媒体",
+	Gaming: "游戏平台",
+	Education: "教育资源",
+	Financial: "金融服务",
+	"Cloud Services": "云服务",
+	"Non-China": "非中国流量",
+};
+
 const LINK_ITEMS: Array<{ key: LinkKey; label: string }> = [
-	{ key: "xray", label: "Xray (Base64)" },
+	{ key: "xray", label: "Xray（Base64）" },
 	{ key: "singbox", label: "Sing-box" },
 	{ key: "clash", label: "Clash" },
 	{ key: "surge", label: "Surge" },
-	{ key: "subconverter", label: "Subconverter Config URL" },
+	{ key: "subconverter", label: "Subconverter 配置链接" },
 ];
 
 const CUSTOM_RULES_PLACEHOLDER =
-	'[{"name":"Custom Group","site_rules":["example"],"ip_rules":[]}]';
+	'[{"name":"自定义分组","site_rules":["example"],"ip_rules":[]}]';
 
 const STORAGE_KEYS = {
 	endpoint: "subconv:endpoint",
@@ -98,7 +119,7 @@ function isPresetName(value: string | null): value is PresetName {
 function normalizeEndpoint(rawValue: string): string {
 	const trimmed = rawValue.trim();
 	if (!trimmed) {
-		throw new Error("Endpoint is required.");
+		throw new Error("请填写 Worker 地址。");
 	}
 
 	const withProtocol = /^https?:\/\//i.test(trimmed)
@@ -107,7 +128,7 @@ function normalizeEndpoint(rawValue: string): string {
 	const parsed = new URL(withProtocol);
 
 	if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
-		throw new Error("Endpoint must use http or https.");
+		throw new Error("Worker 地址必须使用 http 或 https 协议。");
 	}
 
 	const path = parsed.pathname === "/" ? "" : parsed.pathname.replace(/\/+$/, "");
@@ -122,7 +143,7 @@ function parseCustomRules(): unknown[] {
 
 	const parsed = JSON.parse(raw);
 	if (!Array.isArray(parsed)) {
-		throw new Error("Custom rules must be a JSON array.");
+		throw new Error("自定义规则必须是 JSON 数组。");
 	}
 
 	return parsed;
@@ -155,7 +176,7 @@ function createParams(includeConfig: boolean): URLSearchParams {
 	if (includeConfig) {
 		const trimmedInput = input.trim();
 		if (!trimmedInput) {
-			throw new Error("Input source is required.");
+			throw new Error("请输入输入源内容。");
 		}
 
 		params.set("config", trimmedInput);
@@ -211,7 +232,7 @@ function generateLinks(): void {
 	} catch (error) {
 		generatedLinks = null;
 		errorMessage =
-			error instanceof Error ? error.message : "Failed to generate links.";
+			error instanceof Error ? error.message : "生成链接失败。";
 	}
 }
 
@@ -263,7 +284,7 @@ function fallbackCopy(text: string): void {
 	const copied = document.execCommand("copy");
 	document.body.removeChild(textarea);
 	if (!copied) {
-		throw new Error("Copy failed.");
+		throw new Error("复制失败。");
 	}
 }
 
@@ -291,7 +312,7 @@ async function copyLink(key: LinkKey): Promise<void> {
 			copiedKey = null;
 		}, 1600);
 	} catch (error) {
-		errorMessage = error instanceof Error ? error.message : "Copy failed.";
+		errorMessage = error instanceof Error ? error.message : "复制失败。";
 	}
 }
 
@@ -367,16 +388,16 @@ $: if (hydrated) {
 	<div class="mb-6">
 		<h1 class="panel-title">
 			<Icon icon="material-symbols:sync-rounded" class="text-[1.75rem] text-[var(--primary)]" />
-			Subscription Converter
+			订阅转换
 		</h1>
 		<p class="panel-subtitle">
-			Built from the core workflow of sublink-worker, but embedded directly inside this blog theme.
+			基于 sublink-worker 的核心流程，已内嵌到博客并适配当前主题样式。
 		</p>
 	</div>
 
 	<div class="stack">
 		<div>
-			<label class="field-label" for="sub-worker-endpoint">Worker Endpoint</label>
+			<label class="field-label" for="sub-worker-endpoint">Worker 地址</label>
 			<input
 				id="sub-worker-endpoint"
 				class="field-input"
@@ -385,39 +406,39 @@ $: if (hydrated) {
 				placeholder="https://app.sublink.works"
 			/>
 			<p class="field-help">
-				Use your own deployed sublink-worker domain if available.
+				可填写你自己部署的 sublink-worker 域名。
 			</p>
 		</div>
 
 		<div>
-			<label class="field-label" for="sub-input">Input Source</label>
+			<label class="field-label" for="sub-input">输入源</label>
 			<textarea
 				id="sub-input"
 				class="field-textarea"
 				rows={6}
 				bind:value={input}
-				placeholder="Paste subscription links, Clash YAML, Sing-box JSON, or Surge config."
+				placeholder="粘贴订阅链接、Clash YAML、Sing-box JSON 或 Surge 配置。"
 			></textarea>
 		</div>
 
 		<div class="grid gap-4 md:grid-cols-2">
 			<div>
-				<label class="field-label" for="rule-preset">Rule Preset</label>
+				<label class="field-label" for="rule-preset">规则预设</label>
 				<select
 					id="rule-preset"
 					class="field-select"
 					value={selectedPreset}
 					on:change={onPresetChange}
 				>
-					<option value="minimal">minimal</option>
-					<option value="balanced">balanced</option>
-					<option value="comprehensive">comprehensive</option>
-					<option value="custom">custom</option>
+					<option value="minimal">最小化</option>
+					<option value="balanced">均衡</option>
+					<option value="comprehensive">全面</option>
+					<option value="custom">自定义</option>
 				</select>
 			</div>
 
 			<div>
-				<label class="field-label" for="user-agent">Custom User-Agent (Optional)</label>
+				<label class="field-label" for="user-agent">自定义 User-Agent（可选）</label>
 				<input
 					id="user-agent"
 					class="field-input"
@@ -429,7 +450,7 @@ $: if (hydrated) {
 		</div>
 
 		<div>
-			<div class="field-label">Rule Set</div>
+			<div class="field-label">规则集合</div>
 			<div class="rule-grid">
 				{#each ALL_RULES as rule}
 					<button
@@ -438,7 +459,7 @@ $: if (hydrated) {
 						class:rule-chip-active={selectedRules.includes(rule)}
 						on:click={() => toggleRule(rule)}
 					>
-						{rule}
+						{RULE_LABELS[rule] ?? rule}
 					</button>
 				{/each}
 			</div>
@@ -447,22 +468,22 @@ $: if (hydrated) {
 		<div class="grid gap-3 md:grid-cols-2">
 			<label class="option-item">
 				<input type="checkbox" bind:checked={groupByCountry} />
-				<span>Group by country</span>
+				<span>按国家分组</span>
 			</label>
 			<label class="option-item">
 				<input type="checkbox" bind:checked={includeAutoSelect} />
-				<span>Include auto select</span>
+				<span>包含自动选择</span>
 			</label>
 			<label class="option-item">
 				<input type="checkbox" bind:checked={enableClashUI} />
-				<span>Enable Clash UI</span>
+				<span>启用 Clash UI</span>
 			</label>
 		</div>
 
 		{#if enableClashUI}
 			<div class="grid gap-4 md:grid-cols-2">
 				<div>
-					<label class="field-label" for="external-controller">External Controller</label>
+					<label class="field-label" for="external-controller">外部控制器</label>
 					<input
 						id="external-controller"
 						class="field-input"
@@ -472,7 +493,7 @@ $: if (hydrated) {
 					/>
 				</div>
 				<div>
-					<label class="field-label" for="external-ui-url">External UI URL</label>
+					<label class="field-label" for="external-ui-url">外部 UI 下载地址</label>
 					<input
 						id="external-ui-url"
 						class="field-input"
@@ -485,7 +506,7 @@ $: if (hydrated) {
 		{/if}
 
 		<div>
-			<label class="field-label" for="custom-rules">Custom Rules JSON (Optional)</label>
+			<label class="field-label" for="custom-rules">自定义规则 JSON（可选）</label>
 			<textarea
 				id="custom-rules"
 				class="field-textarea field-textarea-mono"
@@ -498,10 +519,10 @@ $: if (hydrated) {
 		<div class="action-row">
 			<button class="btn-regular action-btn" type="button" on:click={generateLinks}>
 				<Icon icon="material-symbols:bolt-rounded" class="mr-2 text-[1.1rem]" />
-				Generate Links
+				生成链接
 			</button>
 			<button class="btn-plain action-btn-secondary" type="button" on:click={clearForm}>
-				Clear
+				清空
 			</button>
 		</div>
 
@@ -513,7 +534,7 @@ $: if (hydrated) {
 
 {#if generatedLinks}
 	<section class="card-base result-wrap p-6 md:p-8 mt-4">
-		<h2 class="result-title">Generated Links</h2>
+		<h2 class="result-title">转换结果</h2>
 		<div class="result-list">
 			{#each LINK_ITEMS as item}
 				<div class="result-item">
@@ -525,7 +546,7 @@ $: if (hydrated) {
 							class="btn-regular copy-btn"
 							on:click={() => copyLink(item.key)}
 						>
-							{copiedKey === item.key ? "Copied" : "Copy"}
+							{copiedKey === item.key ? "已复制" : "复制"}
 						</button>
 					</div>
 				</div>
