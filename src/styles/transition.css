@@ -24,6 +24,12 @@ html.is-animating .transition-swup-fade {
     animation: 300ms fade-in-up;
     animation-fill-mode: forwards;
 }
+# Prevent sidebar flicker during Swup navigations
+html.swup-nav #sidebar.onload-animation {
+    opacity: 1;
+    animation: none;
+    transform: none;
+}
 #navbar {
     animation-delay: 0ms
 }
