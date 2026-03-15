@@ -30,6 +30,11 @@ html.swup-nav #sidebar.onload-animation {
     animation: none;
     transform: none;
 }
+html.swup-nav #sidebar .onload-animation {
+    opacity: 1;
+    animation: none;
+    transform: none;
+}
 #navbar {
     animation-delay: 0ms
 }
