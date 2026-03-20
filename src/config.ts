@@ -56,10 +56,6 @@ export const navBarConfig: NavBarConfig = {
 			name: "\u8BA2\u9605\u8F6C\u6362",
 			url: "/sub-converter/",
 		},
-		{
-			name: "\u52A8\u6001",
-			url: "/moments/",
-		},
 	],
 };
 
