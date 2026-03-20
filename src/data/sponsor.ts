@@ -6,6 +6,7 @@ export type SponsorMethod = {
 	icon: string;
 	hint: string;
 	qrImage: string;
+	address?: string;
 };
 
 export type SponsorGitHubConfig = {
@@ -20,7 +21,7 @@ export const sponsorMethods: SponsorMethod[] = [
 		name: "支付宝",
 		icon: "fa6-brands:alipay",
 		hint: "扫码赞助",
-		qrImage: "/sponsor/alipay-qr.svg",
+		qrImage: "/sponsor/",
 	},
 	{
 		id: "wechat",
@@ -28,6 +29,14 @@ export const sponsorMethods: SponsorMethod[] = [
 		icon: "fa6-brands:weixin",
 		hint: "扫码赞助",
 		qrImage: "/sponsor/wechat-qr.svg",
+	},
+	{
+		id: "usdt",
+		name: "USDT",
+		icon: "material-symbols:currency-bitcoin-rounded",
+		hint: "链上赞助",
+		qrImage: "/sponsor/usdt-qr.svg",
+		address: "请替换为你的USDT地址",
 	},
 ];
 
