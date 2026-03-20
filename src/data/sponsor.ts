@@ -21,14 +21,14 @@ export const sponsorMethods: SponsorMethod[] = [
 		name: "支付宝",
 		icon: "fa6-brands:alipay",
 		hint: "扫码赞助",
-		qrImage: "/sponsor/",
+		qrImage: "/sponsor/zhifubao.png",
 	},
 	{
 		id: "wechat",
 		name: "微信支付",
 		icon: "fa6-brands:weixin",
 		hint: "扫码赞助",
-		qrImage: "/sponsor/wechat-qr.svg",
+		qrImage: "/sponsor/weixin.png",
 	},
 	{
 		id: "usdt",
@@ -36,7 +36,7 @@ export const sponsorMethods: SponsorMethod[] = [
 		icon: "material-symbols:currency-bitcoin-rounded",
 		hint: "链上赞助",
 		qrImage: "/sponsor/usdt-qr.svg",
-		address: "请替换为你的USDT地址",
+		address: "TKMcth2YxjKKQLTK9HNQWrxMdRTG2txwaq",
 	},
 ];
 
