@@ -5,7 +5,7 @@ export type SponsorMethod = {
 	name: string;
 	icon: string;
 	hint: string;
-	qrImage: string;
+	qrImage?: string;
 	address?: string;
 };
 
@@ -35,7 +35,6 @@ export const sponsorMethods: SponsorMethod[] = [
 		name: "USDT",
 		icon: "material-symbols:currency-bitcoin-rounded",
 		hint: "链上赞助",
-		qrImage: "/sponsor/usdt-qr.svg",
 		address: "TKMcth2YxjKKQLTK9HNQWrxMdRTG2txwaq",
 	},
 ];

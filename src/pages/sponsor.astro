@@ -65,30 +65,40 @@ function formatDate(value: string): string {
 									<h2 class="sponsor-title text-xl md:text-2xl leading-none mb-2">
 										{method.name}
 									</h2>
-									<p class="sponsor-description text-base leading-6">
-										{method.hint}
-									</p>
-								</div>
-							</div>
-							{
-								method.address && (
-									<div class="sponsor-address">
-										<span class="sponsor-address-label">{method.name} 地址：</span>
-										<span class="sponsor-address-value">{method.address}</span>
-									</div>
-								)
-							}
+							<p class="sponsor-description text-base leading-6">
+								{method.hint}
+							</p>
+						</div>
+					</div>
+					{
+						method.qrImage ? (
 							<img
 								src={method.qrImage}
 								alt={`${method.name} 收款码`}
 								class="sponsor-qr w-full max-w-[19rem] mx-auto rounded-xl border"
 								loading="lazy"
 							/>
-						</article>
-					))
-				}
-			</div>
-		</div>
+						) : (
+							<div class="sponsor-address-block">
+								<div class="sponsor-address-row">
+									<span class="sponsor-address-label">{method.name} 地址：</span>
+									<span class="sponsor-address-value">{method.address}</span>
+								</div>
+								<button
+									type="button"
+									class="copy-btn"
+									data-copy={method.address}
+								>
+									一键复制
+								</button>
+							</div>
+						)
+					}
+				</article>
+			))
+		}
+	</div>
+</div>
 	</section>
 
 	<section class="sponsor-wall card-base relative overflow-hidden mt-6">
@@ -279,6 +289,59 @@ function formatDate(value: string): string {
 		background: rgba(255, 255, 255, 0.86);
 	}
 
+	.sponsor-address-block {
+		display: flex;
+		flex-direction: column;
+		gap: 0.85rem;
+		padding: 1rem;
+		border-radius: 0.85rem;
+		border: 1px dashed rgba(0, 0, 0, 0.16);
+		background: rgba(255, 255, 255, 0.7);
+	}
+
+	.sponsor-address-row {
+		display: flex;
+		flex-direction: column;
+		gap: 0.35rem;
+	}
+
+	.sponsor-address-label {
+		font-size: 0.95rem;
+		color: rgba(0, 0, 0, 0.6);
+		font-weight: 600;
+	}
+
+	.sponsor-address-value {
+		font-size: 1rem;
+		font-weight: 600;
+		word-break: break-all;
+		color: rgba(0, 0, 0, 0.82);
+	}
+
+	.copy-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.4rem;
+		height: 2.4rem;
+		padding: 0 1rem;
+		border-radius: 0.7rem;
+		font-weight: 700;
+		border: 1px solid rgba(0, 0, 0, 0.15);
+		background: #ffffff;
+		color: rgba(0, 0, 0, 0.78);
+		transition:
+			transform 180ms ease,
+			border-color 180ms ease,
+			background-color 180ms ease;
+	}
+
+	.copy-btn:hover {
+		transform: translateY(-1px);
+		border-color: rgba(0, 0, 0, 0.28);
+		background: rgba(255, 255, 255, 0.95);
+	}
+
 	.sponsor-avatar-border {
 		border-color: rgba(0, 0, 0, 0.12);
 	}
@@ -364,3 +427,40 @@ function formatDate(value: string): string {
 		}
 	}
 </style>
+
+<script is:inline>
+	const copyButtons = document.querySelectorAll(".copy-btn[data-copy]");
+	copyButtons.forEach((button) => {
+		const originalLabel = button.textContent || "";
+		button.addEventListener("click", async () => {
+			const text = button.getAttribute("data-copy") || "";
+			if (!text) {
+				return;
+			}
+			try {
+				if (navigator.clipboard?.writeText) {
+					await navigator.clipboard.writeText(text);
+				} else {
+					const textarea = document.createElement("textarea");
+					textarea.value = text;
+					textarea.style.position = "fixed";
+					textarea.style.opacity = "0";
+					document.body.appendChild(textarea);
+					textarea.focus();
+					textarea.select();
+					document.execCommand("copy");
+					textarea.remove();
+				}
+				button.textContent = "已复制";
+				window.setTimeout(() => {
+					button.textContent = originalLabel;
+				}, 1500);
+			} catch {
+				button.textContent = "复制失败";
+				window.setTimeout(() => {
+					button.textContent = originalLabel;
+				}, 1500);
+			}
+		});
+	});
+</script>
