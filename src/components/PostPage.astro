@@ -72,20 +72,21 @@ const cards = page.data.map((entry: CollectionEntry<"posts">, index: number) => 
 ---
 <div class="transition flex flex-col rounded-[var(--radius-large)] bg-[var(--card-bg)] py-1 md:py-0 md:bg-transparent md:gap-4 mb-4">
     {cards.map(({ entry, randomCover, coverImage }) => (
-        <PostCard
-                entry={entry}
-                title={entry.data.title}
-                tags={entry.data.tags}
-                category={entry.data.category}
-                published={entry.data.published}
-                updated={entry.data.updated}
-                url={getPostUrlBySlug(entry.slug)}
-                image={coverImage}
-                randomCover={randomCover}
-                description={entry.data.description}
-                draft={entry.data.draft}
-                class:list="onload-animation"
-                style={`animation-delay: calc(var(--content-delay) + ${delay++ * interval}ms);`}
-        ></PostCard>
+            <PostCard
+                    entry={entry}
+                    title={entry.data.title}
+                    tags={entry.data.tags}
+                    category={entry.data.category}
+                    published={entry.data.published}
+                    updated={entry.data.updated}
+                    url={getPostUrlBySlug(entry.slug)}
+                    image={coverImage}
+                    randomCover={randomCover}
+                    views={entry.data.views}
+                    description={entry.data.description}
+                    draft={entry.data.draft}
+                    class:list="onload-animation"
+                    style={`animation-delay: calc(var(--content-delay) + ${delay++ * interval}ms);`}
+            ></PostCard>
     ))}
 </div>
