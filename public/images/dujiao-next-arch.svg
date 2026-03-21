@@ -1,0 +1,42 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420">
+  <defs>
+    <style>
+      .box { fill: #ffffff; stroke: #1f2937; stroke-width: 2; }
+      .label { font: 16px "Trebuchet MS", Arial, sans-serif; fill: #111827; }
+      .small { font: 12px "Trebuchet MS", Arial, sans-serif; fill: #4b5563; }
+      .arrow { stroke: #111827; stroke-width: 2; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#111827" />
+    </marker>
+  </defs>
+  <rect width="960" height="420" fill="#f7fafc" />
+
+  <rect x="60" y="40" width="220" height="70" rx="12" class="box" />
+  <text x="170" y="80" text-anchor="middle" class="label">User UI</text>
+
+  <rect x="60" y="140" width="220" height="70" rx="12" class="box" />
+  <text x="170" y="180" text-anchor="middle" class="label">Admin UI</text>
+
+  <rect x="350" y="90" width="260" height="90" rx="12" class="box" />
+  <text x="480" y="130" text-anchor="middle" class="label">API Service</text>
+  <text x="480" y="155" text-anchor="middle" class="small">dujiaonext/api</text>
+
+  <rect x="690" y="60" width="210" height="70" rx="12" class="box" />
+  <text x="795" y="100" text-anchor="middle" class="label">Redis</text>
+
+  <rect x="690" y="150" width="210" height="70" rx="12" class="box" />
+  <text x="795" y="190" text-anchor="middle" class="label">SQLite / Postgres</text>
+
+  <rect x="350" y="230" width="260" height="80" rx="12" class="box" />
+  <text x="480" y="270" text-anchor="middle" class="label">Uploads</text>
+  <text x="480" y="292" text-anchor="middle" class="small">/app/uploads</text>
+
+  <line x1="280" y1="75" x2="350" y2="125" class="arrow" marker-end="url(#arrow)" />
+  <line x1="280" y1="175" x2="350" y2="135" class="arrow" marker-end="url(#arrow)" />
+  <line x1="610" y1="125" x2="690" y2="95" class="arrow" marker-end="url(#arrow)" />
+  <line x1="610" y1="145" x2="690" y2="185" class="arrow" marker-end="url(#arrow)" />
+  <line x1="480" y1="180" x2="480" y2="230" class="arrow" marker-end="url(#arrow)" />
+
+  <text x="480" y="395" text-anchor="middle" class="small">Dujiao-Next containers connected by Docker Compose</text>
+</svg>
