@@ -1,0 +1,88 @@
+---
+import { Icon } from "astro-icon/components";
+import { getPostUrlBySlug } from "@utils/url-utils";
+
+interface Props {
+	prevSlug?: string;
+	prevTitle?: string;
+	nextSlug?: string;
+	nextTitle?: string;
+	class?: string;
+	style?: string;
+}
+
+const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props;
+const className = Astro.props.class;
+const style = Astro.props.style;
+const hasPrev = Boolean(prevSlug && prevTitle);
+const hasNext = Boolean(nextSlug && nextTitle);
+---
+{
+	(hasPrev || hasNext) && (
+		<div class:list={["card-base p-2 flex flex-col gap-2", className]} style={style}>
+			{hasPrev && (
+				<a href={getPostUrlBySlug(prevSlug)} aria-label={`上一章：${prevTitle}`} class="chapter-nav-link">
+					<Icon name="material-symbols:chevron-left-rounded" class="chapter-nav-icon shrink-0"></Icon>
+					<span class="chapter-nav-text">
+						<span class="chapter-nav-label">上一章</span>
+						<span class="chapter-nav-title">{prevTitle}</span>
+					</span>
+				</a>
+			)}
+			{hasNext && (
+				<a href={getPostUrlBySlug(nextSlug)} aria-label={`下一章：${nextTitle}`} class="chapter-nav-link">
+					<span class="chapter-nav-text">
+						<span class="chapter-nav-label">下一章</span>
+						<span class="chapter-nav-title">{nextTitle}</span>
+					</span>
+					<Icon name="material-symbols:chevron-right-rounded" class="chapter-nav-icon shrink-0"></Icon>
+				</a>
+			)}
+		</div>
+	)
+}
+
+<style>
+	.chapter-nav-link {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.55rem 0.65rem;
+		border-radius: 0.75rem;
+		color: rgb(0 0 0 / 0.72);
+		transition: all 0.15s ease;
+	}
+
+	.chapter-nav-link:hover {
+		background: var(--btn-plain-bg-hover);
+		color: var(--primary);
+	}
+
+	.chapter-nav-icon {
+		font-size: 1.5rem;
+		color: var(--primary);
+	}
+
+	.chapter-nav-text {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+	}
+
+	.chapter-nav-label {
+		font-size: 0.75rem;
+		opacity: 0.7;
+	}
+
+	.chapter-nav-title {
+		font-weight: 600;
+		font-size: 0.9rem;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	:global(.dark) .chapter-nav-link {
+		color: rgb(255 255 255 / 0.74);
+	}
+</style>

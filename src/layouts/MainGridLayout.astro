@@ -1,5 +1,6 @@
 ---
 import BackToTop from "@components/control/BackToTop.astro";
+import ReadingProgress from "@components/control/ReadingProgress.astro";
 import Footer from "@components/Footer.astro";
 import Navbar from "@components/Navbar.astro";
 import SideBar from "@components/widget/SideBar.astro";
@@ -22,6 +23,11 @@ interface Props {
 	lang?: string;
 	setOGTypeArticle?: boolean;
 	headings?: MarkdownHeading[];
+	prevSlug?: string;
+	prevTitle?: string;
+	nextSlug?: string;
+	nextTitle?: string;
+	isArticlePage?: boolean;
 }
 
 const {
@@ -31,6 +37,11 @@ const {
 	lang,
 	setOGTypeArticle,
 	headings = [],
+	prevSlug,
+	prevTitle,
+	nextSlug,
+	nextTitle,
+	isArticlePage,
 } = Astro.props;
 const hasBannerCredit =
 	siteConfig.banner.enable && siteConfig.banner.credit.enable;
@@ -80,7 +91,7 @@ const mainPanelTop = siteConfig.banner.enable
             </a>}
 
 
-            <SideBar class="mb-4 row-start-2 row-end-3 col-span-2 lg:row-start-1 lg:row-end-2 lg:col-span-1 lg:max-w-[17.5rem] onload-animation" headings={headings}></SideBar>
+            <SideBar class="mb-4 row-start-2 row-end-3 col-span-2 lg:row-start-1 lg:row-end-2 lg:col-span-1 lg:max-w-[17.5rem] onload-animation" headings={headings} prevSlug={prevSlug} prevTitle={prevTitle} nextSlug={nextSlug} nextTitle={nextTitle}></SideBar>
 
             <main id="swup-container" class="transition-swup-fade col-span-2 lg:col-span-1 overflow-hidden">
                 <div id="content-wrapper" class="onload-animation">
@@ -98,7 +109,7 @@ const mainPanelTop = siteConfig.banner.enable
             </div>
         </div>
 
-        <BackToTop></BackToTop>
+        {isArticlePage ? <ReadingProgress></ReadingProgress> : <BackToTop></BackToTop>}
     </div>
 </div>
 

@@ -1,0 +1,154 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
+<div id="reading-progress" class="reading-progress" aria-hidden="true">
+	<div class="reading-progress-card card-base">
+		<button id="reading-progress-ring" class="reading-progress-ring" aria-label="当前文章阅读进度" title="当前文章阅读进度">
+			<svg viewBox="0 0 48 48" aria-hidden="true">
+				<circle class="ring-track" cx="24" cy="24" r="20"></circle>
+				<circle id="reading-progress-bar" class="ring-bar" cx="24" cy="24" r="20"></circle>
+			</svg>
+			<span id="reading-progress-percent" class="ring-percent">0%</span>
+		</button>
+		<button id="reading-progress-top" class="reading-progress-top" aria-label="回到顶部" title="回到顶部">
+			<Icon name="material-symbols:keyboard-arrow-up-rounded" class="top-icon"></Icon>
+		</button>
+	</div>
+</div>
+
+<style>
+	.reading-progress {
+		position: fixed;
+		right: max(1rem, calc((100vw - var(--page-width)) / 2 + 1rem));
+		bottom: 1.5rem;
+		z-index: 40;
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY(0.75rem);
+		transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+		pointer-events: none;
+	}
+
+	.reading-progress.show {
+		opacity: 1;
+		visibility: visible;
+		transform: none;
+		pointer-events: auto;
+	}
+
+	.reading-progress-card {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.35rem;
+		padding: 0.5rem;
+	}
+
+	.reading-progress-ring {
+		position: relative;
+		width: 3.25rem;
+		height: 3.25rem;
+		border-radius: 9999px;
+		background: transparent;
+		cursor: pointer;
+	}
+
+	.reading-progress-ring svg {
+		width: 100%;
+		height: 100%;
+		transform: rotate(-90deg);
+	}
+
+	.ring-track {
+		fill: none;
+		stroke: var(--btn-regular-bg);
+		stroke-width: 4;
+	}
+
+	.ring-bar {
+		fill: none;
+		stroke: var(--primary);
+		stroke-width: 4;
+		stroke-linecap: round;
+		stroke-dasharray: 125.66;
+		stroke-dashoffset: 125.66;
+	}
+
+	.ring-percent {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 0.72rem;
+		font-weight: 700;
+		color: var(--primary);
+	}
+
+	.reading-progress-top {
+		width: 2.25rem;
+		height: 2.25rem;
+		border-radius: 0.65rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--primary);
+		background: var(--btn-regular-bg);
+		transition: all 0.15s ease;
+	}
+
+	.reading-progress-top:hover {
+		background: var(--btn-regular-bg-hover);
+	}
+
+	.top-icon {
+		font-size: 1.5rem;
+	}
+</style>
+
+<script>
+	const CIRCUMFERENCE = 2 * Math.PI * 20;
+
+	const wrapper = document.getElementById("reading-progress");
+	const bar = document.getElementById("reading-progress-bar");
+	const percent = document.getElementById("reading-progress-percent");
+	const topBtn = document.getElementById("reading-progress-top");
+	const ringBtn = document.getElementById("reading-progress-ring");
+
+	if (bar) {
+		bar.style.strokeDasharray = `${CIRCUMFERENCE}`;
+	}
+
+	function updateReadingProgress() {
+		const article = document.querySelector("#post-container");
+		if (!article) {
+			wrapper?.classList.remove("show");
+			return;
+		}
+		wrapper?.classList.add("show");
+		const total = article.offsetHeight - window.innerHeight;
+		const progress =
+			total > 0
+				? Math.min(1, Math.max(0, -article.getBoundingClientRect().top / total))
+				: 0;
+		if (bar) {
+			bar.style.strokeDashoffset = `${CIRCUMFERENCE * (1 - progress)}`;
+		}
+		if (percent) {
+			percent.textContent = `${Math.round(progress * 100)}%`;
+		}
+	}
+
+	function scrollToTop() {
+		window.scrollTo({ top: 0, behavior: "smooth" });
+	}
+
+	topBtn?.addEventListener("click", scrollToTop);
+	ringBtn?.addEventListener("click", scrollToTop);
+
+	window.addEventListener("scroll", updateReadingProgress, { passive: true });
+	window.addEventListener("resize", updateReadingProgress);
+	document.addEventListener("DOMContentLoaded", updateReadingProgress);
+	document.addEventListener("swup:contentReplaced", updateReadingProgress);
+</script>
