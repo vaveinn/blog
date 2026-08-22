@@ -1,7 +1,7 @@
 ---
 title: 200smart伺服模拟量
 published: 2026-08-22
-description: 西门子 S7-200 SMART 进阶应用笔记整理：步进与伺服运动控制、编码器、S7 与 Modbus 通信、模拟量处理及常用程序模板，配套图片说明。
+description: 西门子 S7-200 SMART 进阶应用笔记整理：步进与伺服运动控制、编码器、S7 与 Modbus 通信、模拟量处理，配套图片说明。
 tags: [伺服, 200smart, 模拟量, 200smart通信]
 category: PLC
 draft: false
@@ -391,62 +391,9 @@ S7-200 SMART 中模拟量信号转换成数字量，典型范围：
 
 模拟量信号容易受干扰，现场接线要重视屏蔽层处理：屏蔽线要接地，屏蔽层通常**单端接地**避免形成干扰回路。建议模拟量线缆远离强电线缆、不与动力线长距离并行敷设、使用屏蔽双绞线、控制柜端统一接地。
 
-## 九、常用程序模板
-
-### 9.1 基础控制
-
-**点动程序**：
-
-![点动程序](/images/200smart/24-jog.png)
-
-**起保停**：
-
-![起保停](/images/200smart/24-latch.png)
-
-**电机正反转输出互锁**：
-
-![正反转输出互锁](/images/200smart/24-reverse-output-interlock.png)
-
-**电机正反转输入互锁**：
-
-![正反转输入互锁](/images/200smart/24-reverse-input-interlock.png)
-
-**闪烁灯**：
-
-![闪烁灯](/images/200smart/24-blink-light.png)
-
-**自建计数器**：
-
-![自建计数器](/images/200smart/24-custom-counter.png)
-
-**定时停止**：
-
-![定时停止](/images/200smart/24-time-stop-1.png)
-
-![定时停止](/images/200smart/24-time-stop-2.png)
-
-### 9.2 灯控类程序
-
-**8 个按钮控制 8 个灯**：
-
-![8按钮控制8灯](/images/200smart/24-8buttons-8lights.png)
-
-**加减模式控制灯**：
-
-![加减模式控制灯](/images/200smart/24-addsub-light-1.png)
-
-![加减模式控制灯](/images/200smart/24-addsub-light-2.png)
-
-**自动模式灯**：
-
-![自动模式灯](/images/200smart/24-auto-mode-light-1.png)
-
-![自动模式灯](/images/200smart/24-auto-mode-light-2.png)
-
-![自动模式灯](/images/200smart/24-auto-mode-light-3.png)
 
 ## 说明与小结
 
 说明：笔记 23（PID）为空文件，暂无内容，本文未收录；后续补充后再单独整理。
 
-从运动控制（步进/伺服、编码器）、通信（S7、Modbus）到模拟量处理，再到常用程序模板，本篇覆盖了 S7-200 SMART 进阶阶段的核心应用。现场调试时记住两条主线：**先看手册再接线，先低速调试再提速**，能避开大部分“飞车”和报警问题。
+从运动控制（步进/伺服、编码器）、通信（S7、Modbus）到模拟量处理，本篇覆盖了 S7-200 SMART 进阶阶段的核心应用。现场调试时记住两条主线：**先看手册再接线，先低速调试再提速**，能避开大部分“飞车”和报警问题。
