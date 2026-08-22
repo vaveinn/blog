@@ -23,7 +23,7 @@ const displayHeadings = headings.filter((heading) => heading.depth <= minDepth +
 	{
 		displayHeadings.length > 0 && (
 			<>
-				<div id="article-outline-panel" class="article-outline-panel lg:hidden" aria-hidden="true">
+				<div id="article-outline-panel" class="article-outline-panel" aria-hidden="true">
 					<div class="article-outline-panel-title">{"\u6587\u7ae0\u7ed3\u6784"}</div>
 					<ul class="article-outline-panel-list">
 						{displayHeadings.map((heading) => (
@@ -45,8 +45,9 @@ const displayHeadings = headings.filter((heading) => heading.depth <= minDepth +
 						))}
 					</ul>
 				</div>
-				<button id="article-outline-btn" class="article-outline-btn lg:hidden" aria-label="文章结构" aria-expanded="false" title="文章结构">
+				<button id="article-outline-btn" class="article-outline-btn" aria-label="显示文章结构" aria-expanded="false" title="显示文章结构">
 					<Icon name="material-symbols:format-list-bulleted-rounded" class="article-outline-btn-icon"></Icon>
+					<span class="article-outline-btn-text">文章结构</span>
 				</button>
 			</>
 		)
@@ -90,12 +91,15 @@ const displayHeadings = headings.filter((heading) => heading.depth <= minDepth +
 	}
 
 	.article-outline-btn {
-		width: 2.75rem;
+		width: auto;
+		min-width: 2.75rem;
 		height: 2.75rem;
 		border-radius: 0.85rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		gap: 0.25rem;
+		padding: 0 0.85rem;
 		color: var(--primary);
 		background: var(--card-bg);
 		border: 1px solid var(--line-color);
@@ -109,6 +113,13 @@ const displayHeadings = headings.filter((heading) => heading.depth <= minDepth +
 
 	.article-outline-btn-icon {
 		font-size: 1.5rem;
+	}
+
+	.article-outline-btn-text {
+		font-size: 0.85rem;
+		font-weight: 600;
+		line-height: 1;
+		white-space: nowrap;
 	}
 
 	.article-outline-panel {
@@ -394,6 +405,11 @@ const displayHeadings = headings.filter((heading) => heading.depth <= minDepth +
 	window.addEventListener("scroll", updateReadingProgress, { passive: true });
 	window.addEventListener("resize", updateReadingProgress);
 	window.addEventListener("load", initReadingProgress);
+	window.addEventListener("pageshow", (event) => {
+		if (event.persisted) {
+			initReadingProgress();
+		}
+	});
 	document.addEventListener("DOMContentLoaded", initReadingProgress);
 	document.addEventListener("swup:contentReplaced", initReadingProgress);
 
