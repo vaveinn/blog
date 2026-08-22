@@ -1,8 +1,56 @@
 ---
 import { Icon } from "astro-icon/components";
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+	headings?: MarkdownHeading[];
+}
+
+const headings = Astro.props.headings || [];
+
+let minDepth = Number.POSITIVE_INFINITY;
+for (const heading of headings) {
+	minDepth = Math.min(minDepth, heading.depth);
+}
+if (!Number.isFinite(minDepth)) {
+	minDepth = 1;
+}
+
+const displayHeadings = headings.filter((heading) => heading.depth <= minDepth + 2);
 ---
 
-<div id="reading-progress" class="reading-progress" aria-hidden="true">
+<div id="reading-progress" class="reading-progress">
+	{
+		displayHeadings.length > 0 && (
+			<>
+				<div id="article-outline-panel" class="article-outline-panel lg:hidden" aria-hidden="true">
+					<div class="article-outline-panel-title">{"\u6587\u7ae0\u7ed3\u6784"}</div>
+					<ul class="article-outline-panel-list">
+						{displayHeadings.map((heading) => (
+							<li>
+								<a
+									href={`#${heading.slug}`}
+									class:list={[
+										"article-outline-panel-link",
+										{
+											"level-1": heading.depth === minDepth,
+											"level-2": heading.depth === minDepth + 1,
+											"level-3": heading.depth >= minDepth + 2,
+										},
+									]}
+								>
+									{heading.text}
+								</a>
+							</li>
+						))}
+					</ul>
+				</div>
+				<button id="article-outline-btn" class="article-outline-btn lg:hidden" aria-label="文章结构" aria-expanded="false" title="文章结构">
+					<Icon name="material-symbols:format-list-bulleted-rounded" class="article-outline-btn-icon"></Icon>
+				</button>
+			</>
+		)
+	}
 	<div class="reading-progress-card card-base">
 		<button id="reading-progress-ring" class="reading-progress-ring" aria-label="当前文章阅读进度" title="当前文章阅读进度">
 			<svg viewBox="0 0 48 48" aria-hidden="true">
@@ -23,6 +71,10 @@ import { Icon } from "astro-icon/components";
 		right: max(1rem, calc((100vw - var(--page-width)) / 2 + 1rem));
 		bottom: 1.5rem;
 		z-index: 40;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: 0.5rem;
 		opacity: 0;
 		visibility: hidden;
 		transform: translateY(0.75rem);
@@ -35,6 +87,93 @@ import { Icon } from "astro-icon/components";
 		visibility: visible;
 		transform: none;
 		pointer-events: auto;
+	}
+
+	.article-outline-btn {
+		width: 2.75rem;
+		height: 2.75rem;
+		border-radius: 0.85rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--primary);
+		background: var(--card-bg);
+		border: 1px solid var(--line-color);
+		transition: all 0.15s ease;
+	}
+
+	.article-outline-btn:hover,
+	.article-outline-btn.active {
+		background: var(--btn-card-bg-hover);
+	}
+
+	.article-outline-btn-icon {
+		font-size: 1.5rem;
+	}
+
+	.article-outline-panel {
+		display: none;
+		width: min(18rem, calc(100vw - 2rem));
+		max-height: 55vh;
+		overflow-y: auto;
+		overflow-x: hidden;
+		background: var(--card-bg);
+		border: 1px solid var(--line-color);
+		border-radius: var(--radius-large);
+		box-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+		padding: 0.75rem;
+	}
+
+	.article-outline-panel.open {
+		display: block;
+	}
+
+	.article-outline-panel-title {
+		display: flex;
+		align-items: center;
+		font-weight: 700;
+		font-size: 0.95rem;
+		color: rgb(0 0 0 / 0.85);
+		margin-bottom: 0.5rem;
+		padding-left: 0.65rem;
+		border-left: 3px solid var(--primary);
+	}
+
+	.article-outline-panel-list {
+		display: grid;
+		gap: 0.15rem;
+	}
+
+	.article-outline-panel-link {
+		display: block;
+		padding: 0.45rem 0.55rem;
+		border-radius: 0.6rem;
+		line-height: 1.45;
+		font-size: 0.9rem;
+		color: rgb(0 0 0 / 0.72);
+		transition: all 0.15s ease;
+	}
+
+	.article-outline-panel-link:hover {
+		background: var(--btn-plain-bg-hover);
+		color: var(--primary);
+	}
+
+	.article-outline-panel-link.active {
+		background: var(--btn-plain-bg-hover);
+		color: var(--primary);
+		font-weight: 600;
+	}
+
+	.article-outline-panel-link.level-2 {
+		padding-left: 1.15rem;
+		font-size: 0.85rem;
+	}
+
+	.article-outline-panel-link.level-3 {
+		padding-left: 1.6rem;
+		font-size: 0.8rem;
+		opacity: 0.9;
 	}
 
 	.reading-progress-card {
@@ -105,6 +244,14 @@ import { Icon } from "astro-icon/components";
 	.top-icon {
 		font-size: 1.5rem;
 	}
+
+	:global(.dark) .article-outline-panel-title {
+		color: rgb(255 255 255 / 0.85);
+	}
+
+	:global(.dark) .article-outline-panel-link {
+		color: rgb(255 255 255 / 0.74);
+	}
 </style>
 
 <script>
@@ -115,18 +262,74 @@ import { Icon } from "astro-icon/components";
 	const percent = document.getElementById("reading-progress-percent");
 	const topBtn = document.getElementById("reading-progress-top");
 	const ringBtn = document.getElementById("reading-progress-ring");
+	const outlineBtn = document.getElementById("article-outline-btn");
+	const outlinePanel = document.getElementById("article-outline-panel");
 
 	if (bar) {
 		bar.style.strokeDasharray = `${CIRCUMFERENCE}`;
 	}
 
+	function openOutlinePanel() {
+		outlinePanel?.classList.add("open");
+		outlineBtn?.classList.add("active");
+		outlineBtn?.setAttribute("aria-expanded", "true");
+		outlinePanel?.setAttribute("aria-hidden", "false");
+	}
+
+	function closeOutlinePanel() {
+		outlinePanel?.classList.remove("open");
+		outlineBtn?.classList.remove("active");
+		outlineBtn?.setAttribute("aria-expanded", "false");
+		outlinePanel?.setAttribute("aria-hidden", "true");
+	}
+
+	function toggleOutlinePanel() {
+		if (outlinePanel?.classList.contains("open")) {
+			closeOutlinePanel();
+		} else {
+			openOutlinePanel();
+		}
+	}
+
+	let outlineObserver = null;
+
+	function initOutlineSpy() {
+		outlineObserver?.disconnect();
+		outlineObserver = null;
+		if (!outlinePanel) return;
+		const links = Array.from(outlinePanel.querySelectorAll<HTMLAnchorElement>("a[href^='#']"));
+		if (links.length === 0) return;
+
+		const targets = links
+			.map((link) => ({
+				link,
+				target: document.getElementById(decodeURIComponent(link.hash.slice(1))),
+			}))
+			.filter(
+				(item) =>
+					item.target && typeof item.target === "object",
+			) as { link: HTMLAnchorElement; target: HTMLElement }[];
+
+		if (targets.length === 0) return;
+
+		outlineObserver = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					const current = targets.find((item) => item.target === entry.target);
+					if (!current || !entry.isIntersecting) continue;
+					links.forEach((link) => link.classList.remove("active"));
+					current.link.classList.add("active");
+				}
+			},
+			{ root: null, rootMargin: "-40% 0px -50% 0px", threshold: 0 },
+		);
+
+		targets.forEach((item) => outlineObserver?.observe(item.target));
+	}
+
 	function updateReadingProgress() {
 		const article = document.querySelector("#post-container");
-		if (!article) {
-			wrapper?.classList.remove("show");
-			return;
-		}
-		wrapper?.classList.add("show");
+		if (!article) return;
 		const total = article.offsetHeight - window.innerHeight;
 		const progress =
 			total > 0
@@ -140,6 +343,18 @@ import { Icon } from "astro-icon/components";
 		}
 	}
 
+	function initReadingProgress() {
+		const article = document.querySelector("#post-container");
+		if (!article) {
+			wrapper?.classList.remove("show");
+			closeOutlinePanel();
+			return;
+		}
+		wrapper?.classList.add("show");
+		initOutlineSpy();
+		updateReadingProgress();
+	}
+
 	function scrollToTop() {
 		window.scrollTo({ top: 0, behavior: "smooth" });
 	}
@@ -147,11 +362,40 @@ import { Icon } from "astro-icon/components";
 	topBtn?.addEventListener("click", scrollToTop);
 	ringBtn?.addEventListener("click", scrollToTop);
 
+	outlineBtn?.addEventListener("click", (event) => {
+		event.stopPropagation();
+		toggleOutlinePanel();
+	});
+
+	outlinePanel?.addEventListener("click", (event) => {
+		const targetEl = event.target as Element | null;
+		const link = targetEl?.closest("a[href^='#'");
+		if (!link) return;
+		event.preventDefault();
+		const id = decodeURIComponent(link.hash.slice(1));
+		const target = document.getElementById(id);
+		if (target) {
+			const top = target.getBoundingClientRect().top + window.scrollY - 96;
+			window.scrollTo({ top, behavior: "smooth" });
+		}
+		closeOutlinePanel();
+	});
+
+	document.addEventListener("click", (event) => {
+		const clickTarget = event.target as Element | null;
+		if (
+			outlinePanel?.classList.contains("open") &&
+			(!clickTarget || !clickTarget.closest("#reading-progress"))
+		) {
+			closeOutlinePanel();
+		}
+	});
+
 	window.addEventListener("scroll", updateReadingProgress, { passive: true });
 	window.addEventListener("resize", updateReadingProgress);
-	window.addEventListener("load", updateReadingProgress);
-	document.addEventListener("DOMContentLoaded", updateReadingProgress);
-	document.addEventListener("swup:contentReplaced", updateReadingProgress);
+	window.addEventListener("load", initReadingProgress);
+	document.addEventListener("DOMContentLoaded", initReadingProgress);
+	document.addEventListener("swup:contentReplaced", initReadingProgress);
 
-	updateReadingProgress();
+	initReadingProgress();
 </script>
