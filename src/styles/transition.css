@@ -1,11 +1,3 @@
-/* Page transition animations with Swup */
-html.is-changing .transition-swup-fade {
-    @apply transition-all duration-200
-}
-html.is-animating .transition-swup-fade {
-    @apply opacity-0 translate-y-4
-}
-
 /* Fade-in animations for components */
 @keyframes fade-in-up {
     0% {
@@ -24,16 +16,18 @@ html.is-animating .transition-swup-fade {
     animation: 300ms fade-in-up;
     animation-fill-mode: forwards;
 }
-# Prevent sidebar flicker during Swup navigations
-html.swup-nav #sidebar.onload-animation {
+/* During SPA navigation, keep the sidebar/persistent layout stable and
+   only animate the incoming content wrapper upward. */
+html.swup-nav .onload-animation {
     opacity: 1;
     animation: none;
     transform: none;
 }
-html.swup-nav #sidebar .onload-animation {
-    opacity: 1;
-    animation: none;
-    transform: none;
+html.swup-nav #content-wrapper.onload-animation {
+    opacity: 0;
+    animation: 500ms fade-in-up;
+    animation-delay: 0ms;
+    animation-fill-mode: forwards;
 }
 #navbar {
     animation-delay: 0ms
