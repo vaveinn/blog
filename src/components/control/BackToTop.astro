@@ -24,6 +24,8 @@ import { Icon } from "astro-icon/components";
     right: 0
     top: 0
     pointer-events: none
+    &.on-reading-page
+        display: none
 
 .back-shortcut-btn
     color: var(--primary)
@@ -61,4 +63,14 @@ function backToTop() {
 function backToBottom() {
     window.scroll({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
 }
+
+(function syncBackToTop() {
+    var wrapper = document.querySelector('.back-to-top-wrapper');
+    if (!wrapper) return;
+    var sync = function () {
+        wrapper.classList.toggle('on-reading-page', Boolean(document.querySelector('#post-container')));
+    };
+    sync();
+    document.addEventListener('swup:contentReplaced', sync);
+})();
 </script>

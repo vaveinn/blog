@@ -27,7 +27,6 @@ interface Props {
 	prevTitle?: string;
 	nextSlug?: string;
 	nextTitle?: string;
-	isArticlePage?: boolean;
 }
 
 const {
@@ -41,7 +40,6 @@ const {
 	prevTitle,
 	nextSlug,
 	nextTitle,
-	isArticlePage,
 } = Astro.props;
 const hasBannerCredit =
 	siteConfig.banner.enable && siteConfig.banner.credit.enable;
@@ -109,7 +107,8 @@ const mainPanelTop = siteConfig.banner.enable
             </div>
         </div>
 
-        {isArticlePage ? <ReadingProgress></ReadingProgress> : <BackToTop></BackToTop>}
+        <BackToTop></BackToTop>
+        <ReadingProgress></ReadingProgress>
     </div>
 </div>
 

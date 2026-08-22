@@ -149,6 +149,9 @@ import { Icon } from "astro-icon/components";
 
 	window.addEventListener("scroll", updateReadingProgress, { passive: true });
 	window.addEventListener("resize", updateReadingProgress);
+	window.addEventListener("load", updateReadingProgress);
 	document.addEventListener("DOMContentLoaded", updateReadingProgress);
 	document.addEventListener("swup:contentReplaced", updateReadingProgress);
+
+	updateReadingProgress();
 </script>
